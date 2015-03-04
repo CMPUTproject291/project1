@@ -9,7 +9,6 @@ Copyright {2015} {
                   Weijie Sun
                   
                   Qingdai Du
-
 }
 
 Licensed under the GNU GENERAL PUBLIC LICENSE (detail see "LICENSE").
