@@ -274,7 +274,7 @@ def Auto_Transaction(curs,connection):
         else:
             pass      
     
-    s_date = input("Seller Date [DD-MMM-YYYY] ")
+    s_date = input("Seller Date [DD-MMM-YYYY] :")
     while len(s_date) != 11 : #note the might error
         print("Invalid input, please try agian")
         s_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")          
@@ -336,6 +336,7 @@ def Auto_Transaction(curs,connection):
                     is_primary_owner = 'n'
                     curStr = ("INSERT INTO OWNER VALUES('%s','%s','%s')"%(nonprimarysin,vehicle_id,is_primary_owner)) 
                     curs.execute(curStr)
+                    connection.commit()
                 except cx_Oracle.DatabaseError as exc:
                     error, = exc.args
                     print( sys.stderr, "Oracle code:", error.code)
@@ -351,16 +352,120 @@ def Auto_Transaction(curs,connection):
             
     return 0
     
-def Driver_Licence_Registration():
-    print ("\n ====== Driver Licence Registration ====== \n")    
+def Driver_Licence_Registration(curs,connection):
+    print ("\n ====== Driver Licence Registration ====== \n")   
+    s_sin = ("SELECT SIN FROM PEOPLE")
+    curs.execute(s_sin)
+    lsin = curs.fetchall()
+    listsin = []      
+    for i in lsin:
+        if i[0].strip() not in listsin:
+            listsin.append(i[0].strip())      
+    sin = input ("SIN:")
+    if sin not in listsin:
+        People_Information(curs,connection,sin)
+
+    s_licence_no = ("SELECT SIN FROM PEOPLE")
+    curs.execute(s_licence_no)
+    llicence_no = curs.fetchall()
+    listlicence_no = []      
+    for i in llicence_no:
+        if i[0].strip() not in listlicence_no:
+            listlicence_no.append(i[0].strip())     
+            
+    while True:
+        try:
+            licence_no = input("licence No:")
+            if licence_no in listsin:
+                print ("The Driver licence No already exist")
+            else:
+                break
+        except:
+            print ("Invalid licence No input")
+        else:
+            pass
+     
+    while True:
+        try:
+            driveclass = input("Drive Class:")
+            break
+        except:
+            print ("Invalid driveclass input")
+        else:
+            pass               
+    
+
+    issuing_date = input ("Issuing Date [DD-MMM-YYYY] :")
+    while len(issuing_date) != 11 : #note the might error
+        print("Invalid input, please try agian")
+        issuing_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")       
+    
+
+    expiring_date = input ("Expiring Date [DD-MMM-YYYY] :")
+    while len(expiring_date) != 11 : #note the might error
+        print("Invalid input, please try agian")
+        expiring_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")     
+        
+    '''    
+    # information for the new row
+    pid=101
+    title="Window"
+    place="Utah"
+    '''
+    #Load image into memory from local file 
+    #(Assumes a file by this name exists in the directory you are running from)
+    f_image  = open('window-sm.jpg','rb')
+    image  = f_image.read()
+    curStr = connection.cursor()
+    # prepare memory for operation parameters
+    curStr.setinputsizes(image=cx_Oracle.BLOB)
+    
+    #while True:
+        #try:
+    insert = """insert into drive_licence(licence_no,sin,class,photo,issuing_date,expiring_date)
+        values (:licence_no, :sin, :driveclass, :image, :issuing_date, :expiring_date)"""
+    print (insert)
+    print("Good!")
+    i = input ("")
+    print (licence_no)
+    print (sin)
+    print (driveclass)
+    print (issuing_date)
+    print (expiring_date)
+    
+    curs.execute(insert,{'licence_no':licence_no, 'sin':sin,'class':driveclass, 'photo':image,'issuing_date':issuing_date,'expiring_date':expiring_date})
+    print (licence_no)
+    print (sin)
+    print (driveclass)
+    print (issuing_date)
+    print (expiring_date)
+    connection.commit()
+           
+    print ("1")
+    f_image.close()
+    '''   
+            break
+        except cx_Oracle.DatabaseError as exc:
+            error, = exc.args
+            print( sys.stderr, "Oracle code:", error.code)
+            print( sys.stderr, "Oracle message:", error.message)
+            print( "===== Data insertion is fail. Reinput the data again! =====")     
+    '''   
+
+    # Housekeeping...
+
     return 0
     
 def Violation_Record():
     print ("\n ====== Violation Record ====== \n")
+    
+    
     return 0
     
 def Search_Engine():
     print ("\n ====== Search Engine ====== \n")
+    
+    
     return 0   
 
 def main():
@@ -414,7 +519,7 @@ def main():
             
             
         elif (Systemnumber == "3"):
-            Driver_Licence_Registration()
+            Driver_Licence_Registration(curs,connection)
         elif (Systemnumber == "4"):
             Violation_Record()
         elif (Systemnumber == "5"):
