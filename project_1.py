@@ -362,8 +362,12 @@ def Driver_Licence_Registration(curs,connection):
         if i[0].strip() not in listsin:
             listsin.append(i[0].strip())      
     sin = input ("SIN:")
-    if sin not in listsin:
-        People_Information(curs,connection,sin)
+    while sin in listsin:
+        print ("Enter a New Sin")
+        sin = input ("SIN:")
+        
+   
+    People_Information(curs,connection,sin)
 
     s_licence_no = ("SELECT SIN FROM PEOPLE")
     curs.execute(s_licence_no)
@@ -418,30 +422,20 @@ def Driver_Licence_Registration(curs,connection):
     image  = f_image.read()
     curStr = connection.cursor()
     # prepare memory for operation parameters
-    curStr.setinputsizes(image=cx_Oracle.BLOB)
+    curStr.setinputsizes(image = cx_Oracle.BLOB)
     
     #while True:
         #try:
     insert = """insert into drive_licence(licence_no,sin,class,photo,issuing_date,expiring_date)
-        values (:licence_no, :sin, :driveclass, :image, :issuing_date, :expiring_date)"""
+        values (:licence_no, :sin, :class, :photo, :issuing_date, :expiring_date)"""
     print (insert)
     print("Good!")
     i = input ("")
-    print (licence_no)
-    print (sin)
-    print (driveclass)
-    print (issuing_date)
-    print (expiring_date)
+
     
     curs.execute(insert,{'licence_no':licence_no, 'sin':sin,'class':driveclass, 'photo':image,'issuing_date':issuing_date,'expiring_date':expiring_date})
-    print (licence_no)
-    print (sin)
-    print (driveclass)
-    print (issuing_date)
-    print (expiring_date)
-    connection.commit()
-           
-    print ("1")
+    #connection.commit()          
+    print ("Nice")
     f_image.close()
     '''   
             break
