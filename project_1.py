@@ -57,7 +57,164 @@ def People_Information(curs,connection,sin):
             print( "===== Data insertion is fail. Reinput the data again! =====")
     return 0    
 
+def search_1(curs,connection):
+    print( "===== List All Information OF the driver =====")
     
+    s_name = ("SELECT NAME FROM PEOPLE")
+    curs.execute(s_name)
+    lname = curs.fetchall()
+    listname = []
+    #print (lSerial_no)
+    for i in lname:
+        listname.append(i[0].strip())    
+    
+    s_licence = ("SELECT licence_no FROM drive_licence")
+    curs.execute(s_licence)
+    llicence = curs.fetchall()
+    listlicence = []
+    #print (lSerial_no)
+    for i in llicence:
+        listlicence.append(i[0].strip())          
+    print (listlicence)
+    print (listname)
+    option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n")
+    while option !="1" and option !="2":
+        print ("Invalild input please input '1' or '2' ")
+        option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No")
+        
+    if option == "1":
+        name = input("Name:")
+        while name not in listname:
+            print ("Name does not exist, please input again")
+            name = input("Name:")   
+        nameconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p,drive_licence d,driving_condition dc, restriction r WHERE dc.c_id = r.r_id AND r.licence_no = d.licence_no AND p.sin = d.sin AND UPPER(p.name) ='"+name.upper()+"'")
+        curs.execute(nameconstr)
+        result = curs.fetchall()
+        print (result)
+               
+        for j in result:     
+            print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")
+            
+        
+        
+    else:
+        licence_no = input("licence NO:")
+        while licence_no not in listlicence:
+            print ("licence_no does not exist, please input again")
+            licence_no = input("licence NO:")
+        licenceconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p, drive_licence d, driving_condition dc, restriction r WHERE UPPER(p.sin) = UPPER(d.sin) AND dc.c_id = r.r_id AND d.licence_no = '"+licence_no+"' AND r.licence_no = d.licence_no")
+        curs.execute(licenceconstr)
+        result = curs.fetchall()
+        print (result)         
+        for j in result:     
+            print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")        
+    
+    print( "===== End Of List All Information OF the driver =====")
+        
+    return 0
+
+def search_2(curs,connection):
+    print ("===== List All violation infromation OF the driver =====")
+    s_sin = ("SELECT SIN FROM PEOPLE")
+    curs.execute(s_sin)
+    lsin = curs.fetchall()
+    listsin = []
+    #print (lSerial_no)
+    for i in lsin:
+        listsin.append(i[0].strip())    
+    
+    s_licence = ("SELECT licence_no FROM drive_licence")
+    curs.execute(s_licence)
+    llicence = curs.fetchall()
+    listlicence = []
+    #print (lSerial_no)
+    for i in llicence:
+        listlicence.append(i[0].strip())          
+    print (listlicence)
+    print (listsin)
+    option = input("1 Enter Sin Number of the Driver \n2 Enter DriverLicence No\n")
+    while option !="1" and option !="2":
+        print ("Invalild input please input '1' or '2' ")
+        option = input("1 Enter Sin Number of the Driver \n2 Enter DriverLicence No")
+        
+    if option == "1":
+        sin = input("SIN:")
+        while sin not in listsin:
+            print ("SIN does not exist, please input again")
+            sin = input("SIN:")   
+        sinconstr = ("SELECT p.name,t.ticket_no, t.violator_no, t.vehicle_id,t.office_no,t.vtype,t.vdate,t.place,t.descriptions, tt.fine FROM people p,ticket t, ticket_type tt WHERE t.violator_no = '"+sin+"' AND t.violator_no = p.sin AND t.vtype = tt.vtype")
+        curs.execute(sinconstr)
+        result = curs.fetchall()
+        #print (result)
+               
+        for j in result:     
+            print ("Name:",j[0],"\nTicket No:",j[1],"\nViolator No:",j[2],"\nVehicle Id:",j[3],"\nOffice No:",j[4],"\nViolator type:",j[5],"\nPlace:",j[6],"\nDescription:",j[7],"\nFine:",j[8],"\n")
+            
+        
+        
+    else:
+        licence_no = input("licence NO:")
+        while licence_no not in listlicence:
+            print ("licence_no does not exist, please input again")
+            licence_no = input("licence NO:")
+        licence_noconstr = ("SELECT p.name,t.ticket_no, t.violator_no, t.vehicle_id,t.office_no,t.vtype,t.vdate,t.place,t.descriptions , tt.fine FROM people p, drive_licence d, ticket t,ticket_type tt WHERE p.sin = t.violator_no AND UPPER(p.sin) = UPPER(d.sin) AND UPPER(d.licence_no) = '"+licence_no+"' AND t.vtype = tt.vtype")
+        curs.execute(licence_noconstr)
+        result = curs.fetchall()
+        #print (result)
+               
+        for j in result:     
+            print ("Name:",j[0],"\nTicket No:",j[1],"\nViolator No:",j[2],"\nVehicle Id:",j[3],"\nOffice No:",j[4],"\nViolator type:",j[5],"\nPlace:",j[6],"\nDescription:",j[7],"\nFine:",j[8],"\n")    
+    
+    print ("===== End of List All violation infromation OF the driver =====")    
+    return 0
+
+def search_3(curs,connection):
+    print ("===== The Vehicle History =====")
+
+    s_serial = ("SELECT licence_no FROM drive_licence")
+    curs.execute(s_serial)
+    lserial = curs.fetchall()
+    listserial = []
+    #print (lSerial_no)
+    for i in lserial:
+        listserial.append(i[0].strip())          
+    print (listserial)
+    
+    serial_no = input("Serial No:")
+
+    while serial_no not in listserial:
+        print ("Invalid input")
+        serial_no = input("Serial No:")
+
+        while True:
+            try:
+                vhstrcur = "DROP VIEW vehicle_history"
+                curs.execute(vhstrcur)
+                connection.commit()
+                
+                break
+            except:
+                print ("droperror")
+                break
+        while True:
+            try:
+                vhstrcur = "CREATE VIEW vehicle_history (vehicle_no, number_sales, average_price, total_tickets) AS SELECT  h.serial_no, count(DISTINCT transaction_id), avg(price), count(DISTINCT t.ticket_no) FROM vehicle h, auto_sale a, ticket t WHERE t.vehicle_id (+) = h.serial_no AND a.vehicle_id (+) = h.serial_no GROUP BY h.serial_no;"
+                curs.execute(vhstrcur)
+                connection.commit()                
+                break
+            except:
+                print ("vh error")
+            
+    vhconstr = ("SELECT * FROM vehicle_history vh WHERE vh.vehicle_no = "+serial_no+" ")
+    #print (vhconstr)
+    curs.execute(vhconstr)
+    connection.commit()                    
+    result = curs.fetchall()  
+    #print (result)
+    for j in result:     
+        print ("Vehicle No:",j[0],"\nNumber of Sales:",j[1],"\nAverage Price:",j[2],"\nTotal Tickets:",j[3],"\n")  
+    print ("===== End Of The Vehicle History =====")    
+    return 0
    
 def New_Vehicle(curs,connection):
     print ("\n ====== New Vehicle Registration ====== \n")
@@ -418,6 +575,14 @@ def Driver_Licence_Registration(curs,connection):
     '''
     #Load image into memory from local file 
     #(Assumes a file by this name exists in the directory you are running from)
+    '''
+    while True:
+        try:    
+            image = f_image.read()
+            break
+        except:
+            f_image = input("the local file name: ")    
+    '''
     f_image  = open('window-sm.jpg','rb')
     image  = f_image.read()
     curStr = connection.cursor()
@@ -450,15 +615,42 @@ def Driver_Licence_Registration(curs,connection):
 
     return 0
     
-def Violation_Record():
+def Violation_Record(curs,connection):
     print ("\n ====== Violation Record ====== \n")
     
     
+    
+    
+    
+    print (" ====== End Violation Record ====== ")
     return 0
     
-def Search_Engine():
-    print ("\n ====== Search Engine ====== \n")
+def Search_Engine(curs,connection):
+    print ("====== Search Engine ====== ")
     
+    while True:
+        print ("1 List All Basic Information OF the driver")
+        print ("2 List All violation infromation OF the driver")
+        print ("3 The Vehicle History")   
+        print ("Exit Exit the search Engine")
+        
+        sechoice = input("\n").lower()
+        while sechoice != "1" and sechoice != "2" and sechoice != "3" and sechoice != "exit":
+            print ("Invalid input, please input")
+            print ("1 List All Basic Information OF the driver")
+            print ("2 List All violation infromation OF the driver")
+            print ("3 The Vehicle History")
+            print ("Exit Exit the search Engine")
+            sechoice = input("\n")
+            
+        if sechoice == "1":
+            search_1(curs,connection)
+        elif sechoice == "2":
+            search_2(curs,connection)
+        elif sechoice == "3":
+            search_3(curs,connection)
+        else:
+            break
     
     return 0   
 
@@ -500,8 +692,8 @@ def main():
 
     while (status == False):
         print ("====== PLEASE CHOOSE THE PROGRAM ======")
-        print ("1 New Vehicle Registration \n2 Auto Transaction \n3 Driver Licence Registration\n4 Violation Record\n5 Search Engine\nExit Exit the program")    
-        Systemnumber = input("Please input 1-5 or Exit");
+        print ("1 New Vehicle Registration \n2 Auto Transaction \n3 Driver Licence Registration\n4 Violation Record\n5 Search Engine\nExit Exit the program\n")    
+        Systemnumber = input("Please input 1-5 or Exit\n");
         
         if (Systemnumber == "1"):
             #go to New Vehicle Registration
@@ -515,9 +707,9 @@ def main():
         elif (Systemnumber == "3"):
             Driver_Licence_Registration(curs,connection)
         elif (Systemnumber == "4"):
-            Violation_Record()
+            Violation_Record(curs,connection)
         elif (Systemnumber == "5"):
-            Search_Engine()
+            Search_Engine(curs,connection)
         elif (Systemnumber.lower() == "exit"):
             print ("Exit the system")
             status = True
