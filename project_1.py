@@ -406,7 +406,11 @@ def Auto_Transaction(curs,connection):
                 print ("The personal information is not register")
                 print ("Please register the personal inforamtion first")
                 People_Information(curs,connection,buyer_id)
-            break
+                break
+            elif buyer_id == seller_id:
+                print ("Seller can not buy car from sellerself")
+            else:
+                break
         except:
             print ("Invalid buyer_id input")
         else:
@@ -575,15 +579,16 @@ def Driver_Licence_Registration(curs,connection):
     '''
     #Load image into memory from local file 
     #(Assumes a file by this name exists in the directory you are running from)
-    '''
+    
     while True:
         try:    
             image = f_image.read()
             break
         except:
-            f_image = input("the local file name: ")    
-    '''
-    f_image  = open('window-sm.jpg','rb')
+            f_image = input("the local file name: ") 
+            break
+    
+    #f_image  = open('window-sm.jpg','rb')
     image  = f_image.read()
     curStr = connection.cursor()
     # prepare memory for operation parameters
@@ -663,7 +668,7 @@ def main():
     while connect == False:
         try:
             #Retrieve login information
-            '''
+            
             user=input("Username [%s]: " % getpass.getuser())
             if not user:
                 user.getpass.getuser()
@@ -671,9 +676,9 @@ def main():
            
             #establish connection
             conString=user+'/'+pw+'@gwynne.cs.ualberta.ca/CRS'
-            '''
-            s = input(" ")
-            conString="weijie2"+'/'+"sun1wei2jie3sun"+'@gwynne.cs.ualberta.ca/CRS'
+            
+            #s = input(" ")
+            #conString="weijie2"+'/'+"sun1wei2jie3sun"+'@gwynne.cs.ualberta.ca/CRS'
             
            
             connection=cx_Oracle.connect(conString)
