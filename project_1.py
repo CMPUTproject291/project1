@@ -622,9 +622,9 @@ def Driver_Licence_Registration(curs,connection):
     
 def Violation_Record(curs,connection):
     print ("\n ====== Violation Record ====== \n")
-    
-    
-    
+    maxTicket = "SELECT MAX(ticket_no) FROM ticket"
+    t_id = "SELECT ticket_no FROM ticket"
+    People_Information(curs,connection,sin)
     
     
     print (" ====== End Violation Record ====== ")
