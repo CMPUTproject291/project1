@@ -622,6 +622,7 @@ def Driver_Licence_Registration(curs,connection):
     
 def Violation_Record(curs,connection):
     print ("\n ====== Violation Record ====== \n")
+<<<<<<< HEAD
     s_sin = ("SELECT SIN FROM PEOPLE")
     curs.execute(s_sin)
     lsin = curs.fetchall()
@@ -733,6 +734,11 @@ def Violation_Record(curs,connection):
         print ("descriptions invalid input")
         descriptions = input("descriptions :")          
     
+=======
+    maxTicket = "SELECT MAX(ticket_no) FROM ticket"
+    t_id = "SELECT ticket_no FROM ticket"
+    People_Information(curs,connection,sin)
+>>>>>>> f55e2b634d3a95d620efe23aedd5f926a4b2ddc1
     
     while True:
         try:
