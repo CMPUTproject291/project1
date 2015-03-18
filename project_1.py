@@ -3,6 +3,9 @@ import cx_Oracle
 import getpass
 from random import randint
 
+'''
+This function will record the people information.
+'''
 def People_Information(curs,connection,sin):
     print ("\n ====== People Information ====== \n")
     
