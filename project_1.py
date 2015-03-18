@@ -314,7 +314,7 @@ def New_Vehicle(curs,connection):
             for i in lsin:
                 listsin.append(i[0].strip())
              
-            #listSerial_no is ['1', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '2', '20', '3', '4', '5', '6', '7', '8', '9']
+
             break
         except:
             print("Invalid input, please try agian")
@@ -622,10 +622,132 @@ def Driver_Licence_Registration(curs,connection):
     
 def Violation_Record(curs,connection):
     print ("\n ====== Violation Record ====== \n")
+    s_sin = ("SELECT SIN FROM PEOPLE")
+    curs.execute(s_sin)
+    lsin = curs.fetchall()
+    listsin = []      
+    for i in lsin:
+        if i[0].strip() not in listsin:
+            listsin.append(i[0].strip())        
+    
+    s_vehicle = ("SELECT SERIAL_NO FROM VEHICLE")
+    curs.execute(s_vehicle)
+    lvehicle = curs.fetchall()
+    listvehicle = []
+    for i in lvehicle:
+        if i[0].strip() not in listvehicle:
+            listvehicle.append(i[0].strip())     
+    
+    s_vtype = ("SELECT vtype FROM ticket_type")
+    curs.execute(s_vtype)
+    lvtype = curs.fetchall()
+    listvtype = []
+    for i in lvtype:
+        if i[0].strip() not in listvtype:
+            listvtype.append(i[0].strip())              
+     
+    s_ticket_no = ("SELECT ticket_no FROM ticket")
+    curs.execute(s_ticket_no)
+    lticket_no = curs.fetchall()
+    listticket_no = []
+    for i in lticket_no:
+        if i[0] not in listticket_no:
+            listticket_no.append(i[0])        
+    print (listticket_no)
+     
+     
+    chooseTicketNo = input("Do you want to automaticlly produce a random ticket No?\n'y' producet a random ticket No\n'n' enter ticket no manually\n").lower()
+    if chooseTicketNo == 'y':
+        while True:
+                    ticket_no = randint(0,1000000)
+                    if ticket_no not in listticket_no:
+                        break
+    else:
+        while True:
+            ticket_no = int(input("Ticket No:"))
+            if ticket_no in listticket_no:
+                print ("The Ticket No already Exist")
+            else :
+                break
     
     
+    violator_no = input("Violator No :")
+    while len(violator_no) > 15:
+        print ("violator_no invalid input")
+        violator_no = input("Violator No :")
+        
+    while violator_no not in listsin:
+        print ("People Sin did not found, please register first")
+        People_Information(curs,connection,violator_no)
+
+
+    vehicle_id = input("vehicle id No :")
+    while len(vehicle_id) > 15:
+        print ("violator_no invalid input")
+        vehicle_id = input("vehicle id No :")
+        
+    while vehicle_id not in listvehicle:
+        print ("Vehicle Id did not found, please register first")
+        back = input("Do you want to go back to Main menu? \n'y' go back to Main menu \nelse reinput a vehicle id\n").lower()
+        if back == "y":
+            return 0
+        else:
+            vehicle_id = input("Violator No :")
+            while len(vehicle_id) > 15:
+                    print ("violator_no invalid input")
+                    vehicle_id = input("Violator No :")            
+    
+    office_no = input("Office No:")
+    while len(office_no) > 15:
+        print ("Office No invalid input")
+        office_no = input("Office No :")    
+    
+    print ("Here is All Ticket Type")
+    print (listvtype)    
+    vtype = input("Variable of Ticket Type:")
+
+
+    while vtype not in listvtype:
+        print ("Not This Kind Of Ticket Type")
+        vtype = input("Variable of Ticket Type:")           
+        while len(vtype) > 10:
+            print ("Variable of Ticket Type invalid input")
+            vtype = input("Variable of Ticket Type:")   
     
     
+    print ("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")          
+    vdate = input("Date:")
+    while len(vdate) != 11:
+        print ("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")          
+        
+        print ("Date invalid input")
+        vdate = input("Date :")     
+        
+    place = input("Place:")
+    while len(place) >= 20:
+        print ("Place invalid input")
+        place = input("Place :")    
+        
+    descriptions = input("descriptions:")
+    while len(descriptions) > 1024:
+        print ("descriptions invalid input")
+        descriptions = input("descriptions :")          
+    
+    
+    while True:
+        try:
+            curStr = ("INSERT INTO ticket VALUES(%s,'%s','%s','%s','%s','%s','%s','%s')"
+                              %(ticket_no,violator_no,vehicle_id,office_no,vtype,vdate,place,descriptions))
+            curs.execute(curStr)
+            connection.commit()            
+            break
+        except cx_Oracle.DatabaseError as exc:
+                error, = exc.args
+                print( sys.stderr, "Oracle code:", error.code)
+                print( sys.stderr, "Oracle message:", error.error)
+                print("Data insertion is fail. Check the data again!\n")
+        else:
+            Violation_Record(curs,connection)
     
     print (" ====== End Violation Record ====== ")
     return 0
