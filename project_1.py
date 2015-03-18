@@ -57,6 +57,11 @@ def People_Information(curs,connection,sin):
             print( "===== Data insertion is fail. Reinput the data again! =====")
     return 0    
 
+'''
+List the name, licence_no, addr, birthday, driving class, driving_condition, and 
+the expiring_data of a driver by entering either a licence_no or a given name. 
+It shall display all the entries if a duplicate name is given.
+'''
 def search_1(curs,connection):
     print( "===== List All Information OF the driver =====")
     
@@ -113,6 +118,10 @@ def search_1(curs,connection):
         
     return 0
 
+'''
+List all violation records received by a person if  the drive licence_no or sin 
+of a person  is entered.
+'''
 def search_2(curs,connection):
     print ("===== List All violation infromation OF the driver =====")
     s_sin = ("SELECT SIN FROM PEOPLE")
@@ -168,6 +177,11 @@ def search_2(curs,connection):
     print ("===== End of List All violation infromation OF the driver =====")    
     return 0
 
+'''
+Print out the vehicle_history, including the number of times that a vehicle has 
+been changed hand, the average price, and the number of violations it has been 
+involved by entering the vehicle's serial number.
+'''
 def search_3(curs,connection):
     print ("===== The Vehicle History =====")
 
@@ -215,7 +229,15 @@ def search_3(curs,connection):
         print ("Vehicle No:",j[0],"\nNumber of Sales:",j[1],"\nAverage Price:",j[2],"\nTotal Tickets:",j[3],"\n")  
     print ("===== End Of The Vehicle History =====")    
     return 0
-   
+
+'''
+This function is used to register a new vehicle by an auto registration officer. 
+By a new vehicle, we mean a vehicle that has not been registered in the database. 
+The component shall allow an officer to enter the detailed information about the 
+vehicle and personal information about its new owners, if it is not in the database. 
+You may assume that all the information about vehicle types has been loaded in 
+the initial database.
+'''
 def New_Vehicle(curs,connection):
     print ("\n ====== New Vehicle Registration ====== \n")
     status = True
@@ -354,7 +376,14 @@ def New_Vehicle(curs,connection):
             
     print ("====== BACK TO THE MAIN MENUE ======")        
     return 0
-    
+
+'''
+This component is used to complete an auto transaction. Your program shall allow 
+the officer to enter all necessary information to complete this task, including, 
+but not limiting to, the details about the seller, the buyer, the date, and the 
+price. The component shall also remove the relevant information of the previous 
+ownership.
+'''
 def Auto_Transaction(curs,connection):
     print ("\n ====== Auto Transaction ====== \n")
     s_sin = ("SELECT SIN FROM PEOPLE")
@@ -512,7 +541,12 @@ def Auto_Transaction(curs,connection):
     
             
     return 0
-    
+
+'''
+This component is used to record the information needed to issuing a drive licence, 
+including the personal information and a picture for the driver. You may assume 
+that all the image files are stored in a local disk system.
+'''
 def Driver_Licence_Registration(curs,connection):
     print ("\n ====== Driver Licence Registration ====== \n")   
     s_sin = ("SELECT SIN FROM PEOPLE")
@@ -619,10 +653,14 @@ def Driver_Licence_Registration(curs,connection):
     # Housekeeping...
 
     return 0
-    
+
+'''
+This component is used by a police officer to issue a traffic ticket and record 
+the violation. You may assume that all the information about ticket_type has been 
+loaded in the initial database.
+'''
 def Violation_Record(curs,connection):
     print ("\n ====== Violation Record ====== \n")
-<<<<<<< HEAD
     s_sin = ("SELECT SIN FROM PEOPLE")
     curs.execute(s_sin)
     lsin = curs.fetchall()
@@ -734,12 +772,6 @@ def Violation_Record(curs,connection):
         print ("descriptions invalid input")
         descriptions = input("descriptions :")          
     
-=======
-    maxTicket = "SELECT MAX(ticket_no) FROM ticket"
-    t_id = "SELECT ticket_no FROM ticket"
-    People_Information(curs,connection,sin)
->>>>>>> f55e2b634d3a95d620efe23aedd5f926a4b2ddc1
-    
     while True:
         try:
             curStr = ("INSERT INTO ticket VALUES(%s,'%s','%s','%s','%s','%s','%s','%s')"
@@ -757,7 +789,12 @@ def Violation_Record(curs,connection):
     
     print (" ====== End Violation Record ====== ")
     return 0
-    
+
+'''
+This function will manage all three search method. It will ask the user to choose
+a number from 1 to 3, and the function will call the co-responding search method
+to perform the search.
+'''
 def Search_Engine(curs,connection):
     print ("====== Search Engine ====== ")
     
@@ -785,8 +822,13 @@ def Search_Engine(curs,connection):
         else:
             break
     
-    return 0   
+    return 0 
 
+'''
+This is the main function of the program. This function will let user connect to
+the oracle and ask user to choose a number, then the program will call different
+function to meet user's desired requestion. 
+'''
 def main():
     #Systemnumber = input("ask");
     #connectionTest = True
