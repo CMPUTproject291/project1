@@ -1,0 +1,30 @@
+﻿CMPUT 291 Project 1 Design Report
+This database application system for an auto registration system, which have access to the data in the Oracle Server. By calling different functions in this program, user who is a driver/non-driver can register a new vehicle and added it to the system, complete an auto transaction by entering required information; user who work for government can issue a driver licence with given information and photo; user who is a police officer can issue a traffic ticket with violation; and also, user can use three build-in search engine to perform three different searches. 
+
+
+main()
+It will connect to the oracle and ask user to choose a number, then the program will call different function to meet user’s desired request. To accomplish this goal, we first designed to ask user for Username and Password, if the Username and Password does not match, the program will print error message and return to the beginning of the loop to let user enter the Username and Password again; if we get the proper Username and Password, the program will successfully connect to the database and change the connection status to True to exit the loop. Then, the application will display welcome message and a list of numbers which have a corresponding function. If the user enter 1 as the input, the application will call function New_Vehicle(curs, connection) to operate; if the user enter 2 as the input, the application will call function Auto_Transaction(curs, connection) to operate; if the user enter 3 as the input, the application will call function Driver_Licence_registration(curs, connection) to operate; if the user enter 4 as the input, the application will call function Violation_Record(curs, connection) to operate; if the user enter 5 as the input, the application will call function Search_Engine(curs, connection) to operate. If the user wants to exit the system, they can simply type in “exit”, the application will be disconnected to Oracle database and be terminated. If the user did not type in a valid string, the system will print a warning message and ask user to try again.
+
+
+People_Information(curs, connection, sin) 
+This function takes in three parameter, curs, connection and sin number. 
+
+
+New_Vehicle(curs, connection)
+This function takes in two parameter, curs and connection.
+
+
+Auto_Transaction(curs, connection)
+This function takes in two parameter, curs and connection.
+
+
+Driver_License_registration(curs, connection) 
+This function takes in two parameter, curs and connection.
+
+
+Violation_Record(curs, connection)
+This function takes in two parameter, curs and connection.
+
+
+Search_Engine(curs, connection)
+This function takes in two parameter, curs and connection.
