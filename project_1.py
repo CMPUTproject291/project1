@@ -422,7 +422,7 @@ def Auto_Transaction(curs,connection):
         try:
             seller_id = input("Seller_id:")
             if seller_id not in listsin:
-                print ("The personal information is not register")
+                print ("The personal information has not registered yet")
                 print ("Please register the personal inforamtion first")
                 People_Information(curs,connection,seller_id)
             break
@@ -435,12 +435,12 @@ def Auto_Transaction(curs,connection):
         try:
             buyer_id = input("Buyer_id:")
             if buyer_id not in listsin:
-                print ("The personal information is not register")
+                print ("The personal information has not registered yet")
                 print ("Please register the personal inforamtion first")
                 People_Information(curs,connection,buyer_id)
                 break
             elif buyer_id == seller_id:
-                print ("Seller can not buy car from sellerself")
+                print ("Seller can not buy car from him/her-self")
             else:
                 break
         except:
@@ -452,6 +452,7 @@ def Auto_Transaction(curs,connection):
         try:
             vehicle_id = input("Vehicle id :")
             if vehicle_id not in listsin:
+                print ("The Vehicle has not registered yet")
                 print ("Please register the Vehicle first")
                 goto = input("Do you want to go to New Vehicle system['y' or 'n'] \n 'n' Go To Main menu").lower()
                 while goto !="y" and goto != "n":
@@ -470,7 +471,7 @@ def Auto_Transaction(curs,connection):
     s_date = input("Seller Date [DD-MMM-YYYY] :")
     while len(s_date) != 11 : #note the might error
         print("Invalid input, please try agian")
-        s_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")          
+        s_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY]:")          
     
     while True:
         try:
@@ -482,9 +483,9 @@ def Auto_Transaction(curs,connection):
         except:
             print ("Invalid Price Input")
     
-    getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatic get an id ").lower()
+    getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatically get an id ").lower()
     while getTraniD != "y" and getTraniD != "n":
-        getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatic get an id ").lower()
+        getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatically get an id ").lower()
     if getTraniD == "y":
         while True:
             try:
@@ -523,6 +524,8 @@ def Auto_Transaction(curs,connection):
             if non_primary.lower() == 'y':
                 nonprimarysin = input("Non-primary Owner Sin : ")
                 if nonprimarysin not in listsin:
+                    print ("The personal information has not registered yet")
+                    print ("Please register the personal inforamtion first")
                     People_Information(curs,connection,nonprimarysin)
                     
                 try:
@@ -561,7 +564,8 @@ def Driver_Licence_Registration(curs,connection):
             listsin.append(i[0].strip())      
     sin = input ("SIN:")
     while sin in listsin:
-        print ("Enter a New Sin")
+        print ("SIN already exist")
+        print ("Enter a New SIN")
         sin = input ("SIN:")
         
    
