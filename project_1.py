@@ -5,6 +5,9 @@
 #didn't comment the main function.
 #don't know how to comment form line 356 to 363
 
+# Team Members: Tian Qi Xiao, Weijie Zhang, Qingdai Du
+# Lecture Section: CMPUT291 B1
+
 import sys
 import cx_Oracle
 import getpass
@@ -21,7 +24,8 @@ def People_Information(curs,connection,sin):
             name = input("Name:") #get the name of client.
             while True: 
                 try :
-            #excute the next step iff the former input is valid.
+            #excute the next step iff the input is valid.
+                    #ask user for height input
                     height = int(input("Height [cm]:"))
                     #constrains for height.
                     if height < 1000 and height > 0: 
@@ -30,28 +34,35 @@ def People_Information(curs,connection,sin):
                         print ("Enter the exactly integer.")
                 except:
                     print ("Enter the exactly integer.")
+            #excute the next step iff the input is valid.
             while True:
                 try:
+                    #ask user for weight input
                     weight = int(input("Weight [KG]:"))
+                    #check if the weight input is valid
                     if weight < 1000 and weight > 0:
                         break
                     else:
                         print ("Enter the exactly integer.")
                 except:
                     print ("Enter the exactly integer.")
-                
+            #ask user for eyecolor input    
             eyecolor = input("Eyecolor: ")
+            #ask user for haircolot input
             haircolor = input("Haircolor: ")
+            #ask user for addr input
             addr = input("Address: ")
+            #ask user for gender input
             gender = input("Gender [f or m]: ").lower()
-            while gender != 'f' and gender != 'm':    #check whether it is an invalid input.
+            #check whether it is an invalid input, if not, print a error message and ask for the input again
+            while gender != 'f' and gender != 'm':
                 print("Our system only accept the male and the female\n 'f' and 'm' only.")
                 gender = input("Gender [f or m] ")                        
             birthday = input("birthday [DD-MMM-YYYY] ")
             while len(birthday) != 11 : #note the might error.
                 print("Invalid input, please try agian")
                 birthday = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")      
-            #to store input information 
+            #to store input information to the database
             curStr = ("INSERT INTO PEOPLE VALUES('%s','%s',%s,%s,'%s','%s','%s','%s','%s')"
                               %(sin,name,height,weight,eyecolor,haircolor,addr,gender,birthday))  
             curs.execute(curStr)
@@ -81,7 +92,7 @@ def search_1(curs,connection):
     s_name = ("SELECT NAME FROM PEOPLE") #read name information from memory.
     curs.execute(s_name)
     lname = curs.fetchall()#fetch all (or all remaining) rows of a query result set and to return a list of tuples. 
-                           #If no more rows are available, it returns an empty list. #####################################################
+                           #If no more rows are available, it returns an empty list.
     listname = []
     for i in lname:
         listname.append(i[0].strip())    
@@ -92,10 +103,12 @@ def search_1(curs,connection):
     listlicence = []
     for i in llicence:
         listlicence.append(i[0].strip())          
-    print (listlicence) # #######################################################keep it?
-    print (listname)
+    print (listlicence) #print a list of licence number on the screen
+    print (listname) #print a list of dirver's name on the screen
     option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n") #based on clients' option, load key information of either name or licence number. 
-    while option !="1" and option !="2":
+    
+    #check if the user input valid option number, if not, print a error message and ask for the input again
+    while option !="1" and option !="2": #check if the user input valid option number
         print ("Invalild input please input '1' or '2' ")
         option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No")
         
@@ -120,7 +133,8 @@ def search_1(curs,connection):
         licenceconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p, drive_licence d, driving_condition dc, restriction r WHERE UPPER(p.sin) = UPPER(d.sin) AND dc.c_id = r.r_id AND d.licence_no = '"+licence_no+"' AND r.licence_no = d.licence_no")
         curs.execute(licenceconstr)
         result = curs.fetchall()
-        print (result)         
+        print (result)
+        #group all the personal information desired together and print on the screen 
         for j in result:     
             print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")        
     
@@ -149,8 +163,8 @@ def search_2(curs,connection):
     listlicence = []
     for i in llicence:
         listlicence.append(i[0].strip())          
-    print (listlicence)# ##################################################################keep it?
-    print (listsin)
+    print (listlicence)#print a list of licence number to the screen
+    print (listsin)#print a list of sin number to the screen
     option = input("1 Enter Sin Number of the Driver \n2 Enter DriverLicence No\n")
     while option !="1" and option !="2":
         print ("Invalild input please input '1' or '2' ")
@@ -292,18 +306,18 @@ def New_Vehicle(curs,connection):
             
             while True:
                 try:
-                    s_typeid = ("SELECT TYPE_ID FROM VEHICLE") # load type id from memory
+                    s_typeid = ("SELECT TYPE_ID FROM VEHICLE") # load type id from database
                     curs.execute(s_typeid)
                     ltypeid = curs.fetchall()
                     listtypeid = []
-                    print (ltypeid)# ##############################################################keep it?
+                    print (ltypeid)#print a list of type id 
                     for i in ltypeid:
                         if i[0] not in listtypeid:
                             listtypeid.append(i[0])#load information in ltypeid to listtypeid
                      
                     break
                 except:
-                    print ("error")#no data loaded from type id ################################################
+                    print ("error")#data cannot load from type id, print error message
             while True:
                 try:
                     type_id = int(input("Select a Type ID {} :".format(listtypeid)))#get new information of type id
@@ -415,9 +429,9 @@ def Auto_Transaction(curs,connection):
             listtransaction_id.append(i[0].strip())       
     
     
-    print (listtransaction_id)# #################################################keep it?
-    print (listvehicle)
-    print (listsin)
+    print (listtransaction_id)#print a list of transaction_id to the screen
+    print (listvehicle)#print a list of vehicle to the screen
+    print (listsin)#print a list of sin number to the screen
     
     while True:
         try:
@@ -476,7 +490,7 @@ def Auto_Transaction(curs,connection):
     while True:
         try:
             price = round(float(input("Price [0-999999]:")),2)#require the price of transacted vehicle
-            if price < 100000000 and price > 0 : # ##########################################do we need the upperbound?
+            if price < 1000000000 and price > 0 : #add a upperbound and lowerbound to avoid overflow
                 break
             else:
                 print ("Invalid Price Input")
@@ -548,11 +562,11 @@ def Auto_Transaction(curs,connection):
 
 
 
-'''
-This component is used to record the information needed to issuing a drive licence, 
-including the personal information and a picture for the driver. You may assume 
-that all the image files are stored in a local disk system.
-'''
+
+#This component is used to record the information needed to issuing a drive licence, 
+#including the personal information and a picture for the driver. You may assume 
+#that all the image files are stored in a local disk system.
+
 def Driver_Licence_Registration(curs,connection):
     print ("\n ====== Driver Licence Registration ====== \n")   
     s_sin = ("SELECT SIN FROM PEOPLE")#load SIN from memory
@@ -623,27 +637,27 @@ def Driver_Licence_Registration(curs,connection):
             break
     image  = f_image.read()
     curStr = connection.cursor()
-    # prepare memory for operation parameters
+    #prepare memory for operation parameters
     curStr.setinputsizes(image = cx_Oracle.BLOB)
+    #insert image to the drive_licence database
     insert = """insert into drive_licence(licence_no,sin,class,photo,issuing_date,expiring_date)
-    values (:licence_no, :sin, :class, :photo, :issuing_date, :expiring_date)"""# ################################################
+    values (:licence_no, :sin, :class, :photo, :issuing_date, :expiring_date)"""
     print (insert)
     print("Good!")
     i = input ("")
 
     
     curs.execute(insert,{'licence_no':licence_no, 'sin':sin,'class':driveclass, 'photo':image,'issuing_date':issuing_date,'expiring_date':expiring_date})         
-    print ("Nice")# ###################################################################################
-    f_image.close()
-    # Housekeeping... ###################################################################################shenmegui
+    print ("Nice")#print a success message on the screen
+    f_image.close() #close image file to avoid memory leaking
 
     return 0
 
-'''
-This component is used by a police officer to issue a traffic ticket and record 
-the violation. You may assume that all the information about ticket_type has been 
-loaded in the initial database.
-'''
+
+#This component is used by a police officer to issue a traffic ticket and record 
+#the violation. All the information about ticket_type has been loaded in the 
+#initial database.
+
 def Violation_Record(curs,connection):
     print ("\n ====== Violation Record ====== \n")
     s_sin = ("SELECT SIN FROM PEOPLE")#load SIN from memory
@@ -777,11 +791,10 @@ def Violation_Record(curs,connection):
 
 
 
-'''
-This function will manage all three search method. It will ask the user to choose
-a number from 1 to 3, and the function will call the co-responding search method
-to perform the search.
-'''
+
+#This function will manage all three search method. It will ask the user to choose
+#a number from 1 to 3, and the function will call the co-responding search method
+#to perform the search.
 def Search_Engine(curs,connection):
     print ("====== Search Engine ====== ")
     
@@ -812,12 +825,9 @@ def Search_Engine(curs,connection):
     return 0 
 
 
-
-'''
-This is the main function of the program. This function will let user connect to
-the oracle and ask user to choose a number, then the program will call different
-function to meet user's desired requestion. 
-'''
+#This is the main function of the program. This function will let user connect to
+#the oracle and ask user to choose a number, then the program will call different
+#function to meet user's desired requestion. 
 def main():
     #Systemnumber = input("ask");
     #connectionTest = True
