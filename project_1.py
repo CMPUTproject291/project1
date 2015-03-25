@@ -215,7 +215,6 @@ def search_3(curs,connection):
     listserial = []
     for i in lserial:
         listserial.append(i[0].strip())          
-    print (listserial)# #############################################################keep it?
     
     serial_no = input("Serial No:")
 
@@ -584,75 +583,73 @@ def Driver_Licence_Registration(curs,connection):
    
     People_Information(curs,connection,sin)
 
-    s_licence_no = ("SELECT SIN FROM PEOPLE")#load SIN from memory
+    s_licence_no = ("SELECT licence_no FROM drive_licence")#load SIN from memory
     curs.execute(s_licence_no)
     llicence_no = curs.fetchall()
     listlicence_no = []      
     for i in llicence_no:
         if i[0].strip() not in listlicence_no:
             listlicence_no.append(i[0].strip())     
+    while True:
+        try:
+            while True:
+                try:
+                    licence_no = input("licence No:")#get driver licence number
+                    if licence_no in listlicence_no:
+                        print ("The Driver licence No. already exist")#no multiple licence-registration allowed
+                    else:
+                        break
+                except:
+                    print ("Invalid licence No input")
+                else:
+                    pass
+             
+            while True:
+                try:
+                    driveclass = input("Drive Class:")#get driver's class type
+                    break
+                except:
+                    print ("Invalid driveclass input")
+                else:
+                    pass               
             
-    while True:
-        try:
-            licence_no = input("licence No:")#get driver licence number
-            if licence_no in listsin:
-                print ("The Driver licence No. already exist")#no multiple licence-registration allowed
-            else:
-                break
-        except:
-            print ("Invalid licence No input")
-        else:
-            pass
-     
-    while True:
-        try:
-            driveclass = input("Drive Class:")#get driver's class type
-            break
-        except:
-            print ("Invalid driveclass input")
-        else:
-            pass               
-    
-
-    issuing_date = input ("Issuing Date [DD-MMM-YYYY] :")#ask for the date licence issued
-    while len(issuing_date) != 11 : #note the might error
-        print("Invalid input, please try agian")
-        issuing_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")       
-    
-
-    expiring_date = input ("Expiring Date [DD-MMM-YYYY] :")
-    while len(expiring_date) != 11 : #note the might error
-        print("Invalid input, please try agian")
-        expiring_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")     
         
+            issuing_date = input ("Issuing Date [DD-MMM-YYYY] :")#ask for the date licence issued
+            while len(issuing_date) != 11 : #note the might error
+                print("Invalid input, please try agian")
+                issuing_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")       
+            
         
-    #Load image into memory from local file 
-    #(Assumes a file by this name exists in the directory you are running from)
-    while True:
-        try:    
-            image = f_image.read()
-            break
-        except:
-            f_image = input("the local file name: ") 
-            break
-    image  = f_image.read()
-    curStr = connection.cursor()
-    #prepare memory for operation parameters
-    curStr.setinputsizes(image = cx_Oracle.BLOB)
-    #insert image to the drive_licence database
-    insert = """insert into drive_licence(licence_no,sin,class,photo,issuing_date,expiring_date)
-    values (:licence_no, :sin, :class, :photo, :issuing_date, :expiring_date)"""
-    print (insert)
-    print("Good!")
-    i = input ("")
+            expiring_date = input ("Expiring Date [DD-MMM-YYYY] :")
+            while len(expiring_date) != 11 : #note the might error
+                print("Invalid input, please try agian")
+                expiring_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")     
+                
+                
+            #Load image into memory from local file 
+            #(Assumes a file by this name exists in the directory you are running from)
+            name = input("The local image file name: ")
+            f_image = open(name,'rb')
+            while True:
+                try:    
+                    photo = f_image.read()
+                    break
+                except:
+                    f_image = input("the local file name: ")
+            curs.setinputsizes(photo = cx_Oracle.BLOB)
 
-    
-    curs.execute(insert,{'licence_no':licence_no, 'sin':sin,'class':driveclass, 'photo':image,'issuing_date':issuing_date,'expiring_date':expiring_date})         
-    print ("Nice")#print a success message on the screen
-    f_image.close() #close image file to avoid memory leaking
-
-    return 0
-
+            insert = """insert into drive_licence(licence_no,sin,class,photo,issuing_date,expiring_date)
+                values (:licence_no, :sin, :class, :photo, :issuing_date, :expiring_date)"""
+            print(insert)
+            curs.execute(insert,{'licence_no':licence_no, 'sin':sin,'class':driveclass, 'photo':photo,'issuing_date':issuing_date,'expiring_date':expiring_date})
+            connection.commit()
+            f_image.close()
+            break        
+        except cx_Oracle.DatabaseError as exc:
+            error, = exc.args
+            print( sys.stderr, "Oracle code:", error.code)
+            print( sys.stderr, "Oracle message:", error.message)
+            print("Data insertion is fail. Check the data again!\n") 
 
 #This component is used by a police officer to issue a traffic ticket and record 
 #the violation. All the information about ticket_type has been loaded in the 
@@ -889,7 +886,7 @@ def main():
             status = True
         else : 
             print ("invalid input please try again")
-            
+    curs.close()        
     connection.close()
 
 main()
