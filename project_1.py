@@ -1,25 +1,30 @@
+#line 44. genderinput has been deleted
+#all print tests have been deleted
+#lines with long # need to be checked again
+#code from line 615 to 638 need to be modified.
+#didn't comment the main function.
+#don't know how to comment form line 356 to 363
+
 import sys
 import cx_Oracle
 import getpass
 from random import randint
 
-'''
-This function will record the people information.
-'''
+
+#This function will record the people information.
+
 def People_Information(curs,connection,sin):
     print ("\n ====== People Information ====== \n")
     
     while True:
         try:
-            '''
-            sin=input("Sin:")
-            '''
-            
-            name = input("Name:")
-            while True:
+            name = input("Name:") #get the name of client.
+            while True: 
                 try :
-                    height = int(input("Height [cm]:"))            
-                    if height < 1000 and height > 0:
+            #excute the next step iff the former input is valid.
+                    height = int(input("Height [cm]:"))
+                    #constrains for height.
+                    if height < 1000 and height > 0: 
                         break
                     else:
                         print ("Enter the exactly integer.")
@@ -38,21 +43,24 @@ def People_Information(curs,connection,sin):
             eyecolor = input("Eyecolor: ")
             haircolor = input("Haircolor: ")
             addr = input("Address: ")
-            genderinput = input("Gender [f or m]: ")
-            gender=genderinput.lower()
-            while gender != 'f' and gender != 'm':    #check
+            gender = input("Gender [f or m]: ").lower()
+            while gender != 'f' and gender != 'm':    #check whether it is an invalid input.
                 print("Our system only accept the male and the female\n 'f' and 'm' only.")
                 gender = input("Gender [f or m] ")                        
             birthday = input("birthday [DD-MMM-YYYY] ")
-            while len(birthday) != 11 : #note the might error
+            while len(birthday) != 11 : #note the might error.
                 print("Invalid input, please try agian")
                 birthday = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")      
+            #to store input information 
             curStr = ("INSERT INTO PEOPLE VALUES('%s','%s',%s,%s,'%s','%s','%s','%s','%s')"
                               %(sin,name,height,weight,eyecolor,haircolor,addr,gender,birthday))  
             curs.execute(curStr)
             connection.commit()
             break
+        #reference of exception handling
         #http://stackoverflow.com/questions/7465889/cx-oracle-and-exception-handling-good-practices
+        #autuor: Ben
+        #edited at: Mar 24 2012 at 16:24
         except cx_Oracle.DatabaseError as exc:
             error, = exc.args
             print( sys.stderr, "Oracle code:", error.code)
@@ -60,56 +68,55 @@ def People_Information(curs,connection,sin):
             print( "===== Data insertion is fail. Reinput the data again! =====")
     return 0    
 
-'''
-List the name, licence_no, addr, birthday, driving class, driving_condition, and 
-the expiring_data of a driver by entering either a licence_no or a given name. 
-It shall display all the entries if a duplicate name is given.
-'''
+
+
+
+#List the name, licence_no, addr, birthday, driving class, driving_condition, and 
+#the expiring_data of a driver by entering either a licence_no or a given name. It 
+#shall display all the entries if a duplicate name is given.
+
 def search_1(curs,connection):
     print( "===== List All Information OF the driver =====")
     
-    s_name = ("SELECT NAME FROM PEOPLE")
+    s_name = ("SELECT NAME FROM PEOPLE") #read name information from memory.
     curs.execute(s_name)
-    lname = curs.fetchall()
+    lname = curs.fetchall()#fetch all (or all remaining) rows of a query result set and to return a list of tuples. 
+                           #If no more rows are available, it returns an empty list. #####################################################
     listname = []
-    #print (lSerial_no)
     for i in lname:
         listname.append(i[0].strip())    
     
-    s_licence = ("SELECT licence_no FROM drive_licence")
+    s_licence = ("SELECT licence_no FROM drive_licence") #read licence information from memory.
     curs.execute(s_licence)
     llicence = curs.fetchall()
     listlicence = []
-    #print (lSerial_no)
     for i in llicence:
         listlicence.append(i[0].strip())          
-    print (listlicence)
+    print (listlicence) # #######################################################keep it?
     print (listname)
-    option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n")
+    option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n") #based on clients' option, load key information of either name or licence number. 
     while option !="1" and option !="2":
         print ("Invalild input please input '1' or '2' ")
         option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No")
         
-    if option == "1":
+    if option == "1": #to match and load the client's name information from memory. 
         name = input("Name:")
         while name not in listname:
             print ("Name does not exist, please input again")
-            name = input("Name:")   
+            name = input("Name:") #if name does not exist(a new client), update the new client's information to memory.
         nameconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p,drive_licence d,driving_condition dc, restriction r WHERE dc.c_id = r.r_id AND r.licence_no = d.licence_no AND p.sin = d.sin AND UPPER(p.name) ='"+name.upper()+"'")
         curs.execute(nameconstr)
-        result = curs.fetchall()
+        result = curs.fetchall() 
         print (result)
                
-        for j in result:     
+        for j in result: #based on the form of to data structure, to print all information of the new client.    
             print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")
             
-        
-        
     else:
-        licence_no = input("licence NO:")
-        while licence_no not in listlicence:
+        licence_no = input("licence NO:") #get licence number
+        while licence_no not in listlicence: #match licence number with data in memory
             print ("licence_no does not exist, please input again")
-            licence_no = input("licence NO:")
+            licence_no = input("licence NO:") #if licence number does not exist(a new client), add the new client's information to memory.
         licenceconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p, drive_licence d, driving_condition dc, restriction r WHERE UPPER(p.sin) = UPPER(d.sin) AND dc.c_id = r.r_id AND d.licence_no = '"+licence_no+"' AND r.licence_no = d.licence_no")
         curs.execute(licenceconstr)
         result = curs.fetchall()
@@ -121,28 +128,28 @@ def search_1(curs,connection):
         
     return 0
 
-'''
-List all violation records received by a person if  the drive licence_no or sin 
-of a person  is entered.
-'''
+
+
+
+#List all violation records received by a person if  the drive licence_no or sin 
+#of a person is entered.
+
 def search_2(curs,connection):
     print ("===== List All violation infromation OF the driver =====")
-    s_sin = ("SELECT SIN FROM PEOPLE")
+    s_sin = ("SELECT SIN FROM PEOPLE") #load sin number(key information) from memory.
     curs.execute(s_sin)
     lsin = curs.fetchall()
     listsin = []
-    #print (lSerial_no)
     for i in lsin:
         listsin.append(i[0].strip())    
     
-    s_licence = ("SELECT licence_no FROM drive_licence")
-    curs.execute(s_licence)
+    s_licence = ("SELECT licence_no FROM drive_licence") #load licence number(one of the key information) from memory.
+    curs.execute(s_licence) 
     llicence = curs.fetchall()
     listlicence = []
-    #print (lSerial_no)
     for i in llicence:
         listlicence.append(i[0].strip())          
-    print (listlicence)
+    print (listlicence)# ##################################################################keep it?
     print (listsin)
     option = input("1 Enter Sin Number of the Driver \n2 Enter DriverLicence No\n")
     while option !="1" and option !="2":
@@ -152,27 +159,25 @@ def search_2(curs,connection):
     if option == "1":
         sin = input("SIN:")
         while sin not in listsin:
-            print ("SIN does not exist, please input again")
-            sin = input("SIN:")   
-        sinconstr = ("SELECT p.name,t.ticket_no, t.violator_no, t.vehicle_id,t.office_no,t.vtype,t.vdate,t.place,t.descriptions, tt.fine FROM people p,ticket t, ticket_type tt WHERE t.violator_no = '"+sin+"' AND t.violator_no = p.sin AND t.vtype = tt.vtype")
+            print ("SIN does not exist, please input again") #if SIN does not exist, get the new SIN from user input.
+            sin = input("SIN:")
+        sinconstr = ("SELECT p.name,t.ticket_no, t.violator_no, t.vehicle_id,t.office_no,t.vtype,t.vdate,t.place,t.descriptions, tt.fine FROM people p,ticket t, ticket_type tt WHERE t.violator_no = '"+sin+"' AND t.violator_no = p.sin AND t.vtype = tt.vtype") #get the new SIN updated in memory
         curs.execute(sinconstr)
         result = curs.fetchall()
-        #print (result)
                
         for j in result:     
-            print ("Name:",j[0],"\nTicket No:",j[1],"\nViolator No:",j[2],"\nVehicle Id:",j[3],"\nOffice No:",j[4],"\nViolator type:",j[5],"\nPlace:",j[6],"\nDescription:",j[7],"\nFine:",j[8],"\n")
+            print ("Name:",j[0],"\nTicket No:",j[1],"\nViolator No:",j[2],"\nVehicle Id:",j[3],"\nOffice No:",j[4],"\nViolator type:",j[5],"\nPlace:",j[6],"\nDescription:",j[7],"\nFine:",j[8],"\n") 
             
         
         
     else:
         licence_no = input("licence NO:")
-        while licence_no not in listlicence:
+        while licence_no not in listlicence: #if licence number does not exist, get the new numeber from user input.
             print ("licence_no does not exist, please input again")
             licence_no = input("licence NO:")
         licence_noconstr = ("SELECT p.name,t.ticket_no, t.violator_no, t.vehicle_id,t.office_no,t.vtype,t.vdate,t.place,t.descriptions , tt.fine FROM people p, drive_licence d, ticket t,ticket_type tt WHERE p.sin = t.violator_no AND UPPER(p.sin) = UPPER(d.sin) AND UPPER(d.licence_no) = '"+licence_no+"' AND t.vtype = tt.vtype")
         curs.execute(licence_noconstr)
         result = curs.fetchall()
-        #print (result)
                
         for j in result:     
             print ("Name:",j[0],"\nTicket No:",j[1],"\nViolator No:",j[2],"\nVehicle Id:",j[3],"\nOffice No:",j[4],"\nViolator type:",j[5],"\nPlace:",j[6],"\nDescription:",j[7],"\nFine:",j[8],"\n")    
@@ -180,11 +185,13 @@ def search_2(curs,connection):
     print ("===== End of List All violation infromation OF the driver =====")    
     return 0
 
-'''
-Print out the vehicle_history, including the number of times that a vehicle has 
-been changed hand, the average price, and the number of violations it has been 
-involved by entering the vehicle's serial number.
-'''
+
+
+
+#Print out the vehicle_history, including the number of times that a vehicle has 
+#been changed hand, the average price, and the number of violations it has been 
+#involved by entering the vehicle's serial number.
+
 def search_3(curs,connection):
     print ("===== The Vehicle History =====")
 
@@ -192,26 +199,25 @@ def search_3(curs,connection):
     curs.execute(s_serial)
     lserial = curs.fetchall()
     listserial = []
-    #print (lSerial_no)
     for i in lserial:
         listserial.append(i[0].strip())          
-    print (listserial)
+    print (listserial)# #############################################################keep it?
     
     serial_no = input("Serial No:")
 
-    while serial_no not in listserial:
+    while serial_no not in listserial: #if serial number does not exist, get the new numeber from user input.
         print ("Invalid input")
-        serial_no = input("Serial No:")
+        serial_no = input("Serial No:") 
 
         while True:
             try:
-                vhstrcur = "DROP VIEW vehicle_history"
+                vhstrcur = "DROP VIEW vehicle_history" #drop view table
                 curs.execute(vhstrcur)
                 connection.commit()
                 
                 break
             except:
-                print ("droperror")
+                print ("droperror")#handle drop error
                 break
         while True:
             try:
@@ -223,24 +229,24 @@ def search_3(curs,connection):
                 print ("vh error")
             
     vhconstr = ("SELECT * FROM vehicle_history vh WHERE vh.vehicle_no = "+serial_no+" ")
-    #print (vhconstr)
     curs.execute(vhconstr)
-    connection.commit()                    
-    result = curs.fetchall()  
-    #print (result)
+    connection.commit()                   
+    result = curs.fetchall()   
     for j in result:     
         print ("Vehicle No:",j[0],"\nNumber of Sales:",j[1],"\nAverage Price:",j[2],"\nTotal Tickets:",j[3],"\n")  
     print ("===== End Of The Vehicle History =====")    
     return 0
 
-'''
-This function is used to register a new vehicle by an auto registration officer. 
-By a new vehicle, we mean a vehicle that has not been registered in the database. 
-The component shall allow an officer to enter the detailed information about the 
-vehicle and personal information about its new owners, if it is not in the database. 
-You may assume that all the information about vehicle types has been loaded in 
-the initial database.
-'''
+
+
+
+#This function is used to register a new vehicle by an auto registration officer. 
+#By a new vehicle, we mean a vehicle that has not been registered in the database. 
+#The component shall allow an officer to enter the detailed information about the 
+#vehicle and personal information about its new owners, if it is not in the database. 
+#You may assume that all the information about vehicle types has been loaded in 
+#the initial database.
+
 def New_Vehicle(curs,connection):
     print ("\n ====== New Vehicle Registration ====== \n")
     status = True
@@ -248,15 +254,13 @@ def New_Vehicle(curs,connection):
         try:
             while True:
                 try:
-                    s_serialno = ("SELECT SERIAL_NO FROM VEHICLE")
+                    s_serialno = ("SELECT SERIAL_NO FROM VEHICLE") #load serial number from memory.
                     curs.execute(s_serialno)
                     lSerial_no = curs.fetchall()
                     listSerial_no = []
-                    #print (lSerial_no)
                     for i in lSerial_no:
                         listSerial_no.append(i[0].strip())
                      
-                    #listSerial_no is ['1', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '2', '20', '3', '4', '5', '6', '7', '8', '9']
                     break
                 except:
                     print("Invalid input, please try agian")
@@ -264,11 +268,11 @@ def New_Vehicle(curs,connection):
                     pass
                 
             serial_no = input("Serial_no [within 20 number]:")
-            while serial_no in listSerial_no or serial_no.split() == []:
+            while serial_no in listSerial_no or serial_no.split() == []:#check whether the vehicle information already exists
                 print ("That is not a valid input")
                 serial_no = input("Serial_no [within 20 number]:")
             
-            maker = input("Maker [within 20 Char]:")
+            maker = input("Maker [within 20 Char]:") #get more information about the new vehicle
             model = input("Model [within 20 Char]:")
             
             while True:
@@ -288,31 +292,27 @@ def New_Vehicle(curs,connection):
             
             while True:
                 try:
-                    s_typeid = ("SELECT TYPE_ID FROM VEHICLE")
+                    s_typeid = ("SELECT TYPE_ID FROM VEHICLE") # load type id from memory
                     curs.execute(s_typeid)
                     ltypeid = curs.fetchall()
                     listtypeid = []
-                    print (ltypeid)
-                    #print (lSerial_no)
+                    print (ltypeid)# ##############################################################keep it?
                     for i in ltypeid:
                         if i[0] not in listtypeid:
-                            listtypeid.append(i[0])
+                            listtypeid.append(i[0])#load information in ltypeid to listtypeid
                      
-                    #listSerial_no is ['1', '2']
                     break
                 except:
-                    print ("error")
-            #print (listtypeid)
+                    print ("error")#no data loaded from type id ################################################
             while True:
                 try:
-                    type_id = int(input("Select a Type ID {} :".format(listtypeid)))
+                    type_id = int(input("Select a Type ID {} :".format(listtypeid)))#get new information of type id
                     if type_id in listtypeid :
                         break
                 except:
                     print ("Invalid input")
                 else:
                     pass
-            #print (type_id)   
             curStrvehicle = ("INSERT INTO VEHICLE VALUES('%s','%s','%s',%s,'%s',%s)"
                                           %(serial_no,maker,model,year,colour,type_id))    
             curs.execute(curStrvehicle)
@@ -332,7 +332,7 @@ def New_Vehicle(curs,connection):
     
     while True:
         try:
-            s_sin = ("SELECT SIN FROM PEOPLE")
+            s_sin = ("SELECT SIN FROM PEOPLE")#load SIN from memory
             curs.execute(s_sin)
             lsin = curs.fetchall()
             listsin = []
@@ -346,7 +346,7 @@ def New_Vehicle(curs,connection):
         else:
             pass    
     
-    sin = input("Sin:")
+    sin = input("Sin:")#get owner informaiton about the new vihecle
     if sin not in listsin:
         print ("This is a new Sin number")
         print ("Please register your personal information first====>>>>")
@@ -359,7 +359,7 @@ def New_Vehicle(curs,connection):
             vehicle_id = serial_no
             is_primary_ownerinput = input("Is Primary Owner ?[y or n]: ")
             is_primary_owner=is_primary_ownerinput.lower()
-            while is_primary_owner != 'y' and is_primary_owner != 'n':    #check
+            while is_primary_owner != 'y' and is_primary_owner != 'n':    
                 print("Our system only accept the yes and no \n 'y' and 'n' only.")
                 is_primary_ownerinput = input("Gender [f or m] ")                 
                 is_primary_owner=is_primary_ownerinput.lower()
@@ -380,16 +380,17 @@ def New_Vehicle(curs,connection):
     print ("====== BACK TO THE MAIN MENUE ======")        
     return 0
 
-'''
-This component is used to complete an auto transaction. Your program shall allow 
-the officer to enter all necessary information to complete this task, including, 
-but not limiting to, the details about the seller, the buyer, the date, and the 
-price. The component shall also remove the relevant information of the previous 
-ownership.
-'''
+
+
+
+#This component is used to complete an auto transaction. Your program shall allow 
+#the officer to enter all necessary information to complete this task, including, 
+#but not limiting to, the details about the seller, the buyer, the date, and the 
+#price. The component shall also remove the relevant information of the previous 
+#ownership.
 def Auto_Transaction(curs,connection):
     print ("\n ====== Auto Transaction ====== \n")
-    s_sin = ("SELECT SIN FROM PEOPLE")
+    s_sin = ("SELECT SIN FROM PEOPLE")#load SIN form memory
     curs.execute(s_sin)
     lsin = curs.fetchall()
     listsin = []      
@@ -397,7 +398,7 @@ def Auto_Transaction(curs,connection):
         if i[0].strip() not in listsin:
             listsin.append(i[0].strip())    
             
-    s_vehicle = ("SELECT SERIAL_NO FROM VEHICLE")
+    s_vehicle = ("SELECT SERIAL_NO FROM VEHICLE")#load serial number from memory
     curs.execute(s_vehicle)
     lvehicle = curs.fetchall()
     listvehicle = []
@@ -405,7 +406,7 @@ def Auto_Transaction(curs,connection):
         if i[0].strip() not in listvehicle:
             listvehicle.append(i[0].strip()) 
             
-    s_transaction_id = ("SELECT SERIAL_NO FROM VEHICLE")
+    s_transaction_id = ("SELECT SERIAL_NO FROM VEHICLE")#load serial number of vehicle which will be transacted
     curs.execute(s_transaction_id)
     ltransaction_id = curs.fetchall()
     listtransaction_id = []
@@ -414,15 +415,15 @@ def Auto_Transaction(curs,connection):
             listtransaction_id.append(i[0].strip())       
     
     
-    print (listtransaction_id)
+    print (listtransaction_id)# #################################################keep it?
     print (listvehicle)
-    print (listsin)  
+    print (listsin)
     
     while True:
         try:
-            seller_id = input("Seller_id:")
+            seller_id = input("Seller_id:")#get SIN of the person who is going to sell the vehicle
             if seller_id not in listsin:
-                print ("The personal information has not registered yet")
+                print ("The personal information is not register")
                 print ("Please register the personal inforamtion first")
                 People_Information(curs,connection,seller_id)
             break
@@ -433,14 +434,14 @@ def Auto_Transaction(curs,connection):
         
     while True:
         try:
-            buyer_id = input("Buyer_id:")
+            buyer_id = input("Buyer_id:")#get SIN of person who is going to buy the vehicle
             if buyer_id not in listsin:
-                print ("The personal information has not registered yet")
+                print ("The personal information is not register")
                 print ("Please register the personal inforamtion first")
                 People_Information(curs,connection,buyer_id)
                 break
-            elif buyer_id == seller_id:
-                print ("Seller can not buy car from him/her-self")
+            elif buyer_id == seller_id:#transaction in the same person is not permitted
+                print ("Seller can not buy car from sellerself")
             else:
                 break
         except:
@@ -450,15 +451,14 @@ def Auto_Transaction(curs,connection):
     
     while True:
         try:
-            vehicle_id = input("Vehicle id :")
+            vehicle_id = input("Vehicle id :")#get ID of vehicle which would be transacted
             if vehicle_id not in listsin:
-                print ("The Vehicle has not registered yet")
-                print ("Please register the Vehicle first")
-                goto = input("Do you want to go to New Vehicle system['y' or 'n'] \n 'n' Go To Main menu").lower()
+                print ("Please register the Vehicle first")#handle the case which the vehicle hasn't been registrated yet.
+                goto = input("Do you want to go to New Vehicle system['y' or 'n'] \n 'n' Go To Main menu").lower()#ask to registrate the vehicle first.
                 while goto !="y" and goto != "n":
                     goto = input("Do you want to go to New Vehicle system['y' or 'n'] \n 'n' Go To Main menu").lower()
                     
-                if goto == "y":
+                if goto == "y":#jump to Vehicle Registration.
                     New_Vehicle(curs,connection)
                 elif goto == "n":
                     return 0          
@@ -468,37 +468,37 @@ def Auto_Transaction(curs,connection):
         else:
             pass      
     
-    s_date = input("Seller Date [DD-MMM-YYYY] :")
+    s_date = input("Seller Date [DD-MMM-YYYY] :")#require the date of transaction
     while len(s_date) != 11 : #note the might error
         print("Invalid input, please try agian")
-        s_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY]:")          
+        s_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")          
     
     while True:
         try:
-            price = round(float(input("Price [0-999999]:")),2)
-            if price < 100000000 and price > 0 :
+            price = round(float(input("Price [0-999999]:")),2)#require the price of transacted vehicle
+            if price < 100000000 and price > 0 : # ##########################################do we need the upperbound?
                 break
             else:
                 print ("Invalid Price Input")
         except:
             print ("Invalid Price Input")
     
-    getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatically get an id ").lower()
+    getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatic get an id ").lower()#ask for transaction id
     while getTraniD != "y" and getTraniD != "n":
-        getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatically get an id ").lower()
+        getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatic get an id ").lower()
     if getTraniD == "y":
         while True:
             try:
-                transaction_id = int(input("Transaction ID:" ))
+                transaction_id = int(input("Transaction ID:" ))#get transaction id from user input.
                 if transaction_id in listtransaction_id:
-                    print ("The transaction id already exist, please input again")
+                    print ("The transaction id already exist, please input again")#no duplicate of transaction id.
                 else:
                     break
             except:
                 print ("Invalid transaction id input")
     else:
         while True:
-            transaction_id = randint(0,10000)
+            transaction_id = randint(0,10000)#system creates a new transaction automatically
             if transaction_id not in listtransaction_id:
                 break
             else :
@@ -520,12 +520,10 @@ def Auto_Transaction(curs,connection):
     print ("The new OnwnerShip added")
     
     while True:
-            non_primary = input("Does this vehicle has more than one owner? Enter 'y' or 'n'\n")
+            non_primary = input("Does this vehicle has more than one owner? Enter 'y' or 'n'\n")#check if there exists another owner.
             if non_primary.lower() == 'y':
-                nonprimarysin = input("Non-primary Owner Sin : ")
+                nonprimarysin = input("Non-primary Owner Sin : ")#update another person to the owner.
                 if nonprimarysin not in listsin:
-                    print ("The personal information has not registered yet")
-                    print ("Please register the personal inforamtion first")
                     People_Information(curs,connection,nonprimarysin)
                     
                 try:
@@ -548,6 +546,8 @@ def Auto_Transaction(curs,connection):
             
     return 0
 
+
+
 '''
 This component is used to record the information needed to issuing a drive licence, 
 including the personal information and a picture for the driver. You may assume 
@@ -555,7 +555,7 @@ that all the image files are stored in a local disk system.
 '''
 def Driver_Licence_Registration(curs,connection):
     print ("\n ====== Driver Licence Registration ====== \n")   
-    s_sin = ("SELECT SIN FROM PEOPLE")
+    s_sin = ("SELECT SIN FROM PEOPLE")#load SIN from memory
     curs.execute(s_sin)
     lsin = curs.fetchall()
     listsin = []      
@@ -564,14 +564,13 @@ def Driver_Licence_Registration(curs,connection):
             listsin.append(i[0].strip())      
     sin = input ("SIN:")
     while sin in listsin:
-        print ("SIN already exist")
-        print ("Enter a New SIN")
+        print ("Enter a New Sin")
         sin = input ("SIN:")
         
    
     People_Information(curs,connection,sin)
 
-    s_licence_no = ("SELECT SIN FROM PEOPLE")
+    s_licence_no = ("SELECT SIN FROM PEOPLE")#load SIN from memory
     curs.execute(s_licence_no)
     llicence_no = curs.fetchall()
     listlicence_no = []      
@@ -581,9 +580,9 @@ def Driver_Licence_Registration(curs,connection):
             
     while True:
         try:
-            licence_no = input("licence No:")
+            licence_no = input("licence No:")#get driver licence number
             if licence_no in listsin:
-                print ("The Driver licence No already exist")
+                print ("The Driver licence No. already exist")#no multiple licence-registration allowed
             else:
                 break
         except:
@@ -593,7 +592,7 @@ def Driver_Licence_Registration(curs,connection):
      
     while True:
         try:
-            driveclass = input("Drive Class:")
+            driveclass = input("Drive Class:")#get driver's class type
             break
         except:
             print ("Invalid driveclass input")
@@ -601,7 +600,7 @@ def Driver_Licence_Registration(curs,connection):
             pass               
     
 
-    issuing_date = input ("Issuing Date [DD-MMM-YYYY] :")
+    issuing_date = input ("Issuing Date [DD-MMM-YYYY] :")#ask for the date licence issued
     while len(issuing_date) != 11 : #note the might error
         print("Invalid input, please try agian")
         issuing_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")       
@@ -612,15 +611,9 @@ def Driver_Licence_Registration(curs,connection):
         print("Invalid input, please try agian")
         expiring_date = input("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")     
         
-    '''    
-    # information for the new row
-    pid=101
-    title="Window"
-    place="Utah"
-    '''
+        
     #Load image into memory from local file 
     #(Assumes a file by this name exists in the directory you are running from)
-    
     while True:
         try:    
             image = f_image.read()
@@ -628,36 +621,21 @@ def Driver_Licence_Registration(curs,connection):
         except:
             f_image = input("the local file name: ") 
             break
-    
-    #f_image  = open('window-sm.jpg','rb')
     image  = f_image.read()
     curStr = connection.cursor()
     # prepare memory for operation parameters
     curStr.setinputsizes(image = cx_Oracle.BLOB)
-    
-    #while True:
-        #try:
     insert = """insert into drive_licence(licence_no,sin,class,photo,issuing_date,expiring_date)
-        values (:licence_no, :sin, :class, :photo, :issuing_date, :expiring_date)"""
+    values (:licence_no, :sin, :class, :photo, :issuing_date, :expiring_date)"""# ################################################
     print (insert)
     print("Good!")
     i = input ("")
 
     
-    curs.execute(insert,{'licence_no':licence_no, 'sin':sin,'class':driveclass, 'photo':image,'issuing_date':issuing_date,'expiring_date':expiring_date})
-    #connection.commit()          
-    print ("Nice")
+    curs.execute(insert,{'licence_no':licence_no, 'sin':sin,'class':driveclass, 'photo':image,'issuing_date':issuing_date,'expiring_date':expiring_date})         
+    print ("Nice")# ###################################################################################
     f_image.close()
-    '''   
-            break
-        except cx_Oracle.DatabaseError as exc:
-            error, = exc.args
-            print( sys.stderr, "Oracle code:", error.code)
-            print( sys.stderr, "Oracle message:", error.message)
-            print( "===== Data insertion is fail. Reinput the data again! =====")     
-    '''   
-
-    # Housekeeping...
+    # Housekeeping... ###################################################################################shenmegui
 
     return 0
 
@@ -668,7 +646,7 @@ loaded in the initial database.
 '''
 def Violation_Record(curs,connection):
     print ("\n ====== Violation Record ====== \n")
-    s_sin = ("SELECT SIN FROM PEOPLE")
+    s_sin = ("SELECT SIN FROM PEOPLE")#load SIN from memory
     curs.execute(s_sin)
     lsin = curs.fetchall()
     listsin = []      
@@ -676,7 +654,7 @@ def Violation_Record(curs,connection):
         if i[0].strip() not in listsin:
             listsin.append(i[0].strip())        
     
-    s_vehicle = ("SELECT SERIAL_NO FROM VEHICLE")
+    s_vehicle = ("SELECT SERIAL_NO FROM VEHICLE")#load serial number from memory
     curs.execute(s_vehicle)
     lvehicle = curs.fetchall()
     listvehicle = []
@@ -684,7 +662,7 @@ def Violation_Record(curs,connection):
         if i[0].strip() not in listvehicle:
             listvehicle.append(i[0].strip())     
     
-    s_vtype = ("SELECT vtype FROM ticket_type")
+    s_vtype = ("SELECT vtype FROM ticket_type")#load vehicle type from memory
     curs.execute(s_vtype)
     lvtype = curs.fetchall()
     listvtype = []
@@ -692,7 +670,7 @@ def Violation_Record(curs,connection):
         if i[0].strip() not in listvtype:
             listvtype.append(i[0].strip())              
      
-    s_ticket_no = ("SELECT ticket_no FROM ticket")
+    s_ticket_no = ("SELECT ticket_no FROM ticket")#load ticket number from memory
     curs.execute(s_ticket_no)
     lticket_no = curs.fetchall()
     listticket_no = []
@@ -705,36 +683,36 @@ def Violation_Record(curs,connection):
     chooseTicketNo = input("Do you want to automaticlly produce a random ticket No?\n'y' producet a random ticket No\n'n' enter ticket no manually\n").lower()
     if chooseTicketNo == 'y':
         while True:
-                    ticket_no = randint(0,1000000)
+                    ticket_no = randint(0,1000000)#system creates a ticket number automatically
                     if ticket_no not in listticket_no:
                         break
     else:
         while True:
             ticket_no = int(input("Ticket No:"))
-            if ticket_no in listticket_no:
-                print ("The Ticket No already Exist")
+            if ticket_no in listticket_no: #no duplicate ticket number allowed.
+                print ("The Ticket No. already Exist")
             else :
                 break
     
     
-    violator_no = input("Violator No :")
+    violator_no = input("Violator No :")#get information of violators
     while len(violator_no) > 15:
         print ("violator_no invalid input")
         violator_no = input("Violator No :")
         
-    while violator_no not in listsin:
+    while violator_no not in listsin:#check if it exists the information of the violator.
         print ("People Sin did not found, please register first")
         People_Information(curs,connection,violator_no)
 
 
-    vehicle_id = input("vehicle id No :")
+    vehicle_id = input("vehicle id No :")#get the vehicle ID.
     while len(vehicle_id) > 15:
         print ("violator_no invalid input")
         vehicle_id = input("vehicle id No :")
         
-    while vehicle_id not in listvehicle:
+    while vehicle_id not in listvehicle:#check if it exists the information of the vehicle.
         print ("Vehicle Id did not found, please register first")
-        back = input("Do you want to go back to Main menu? \n'y' go back to Main menu \nelse reinput a vehicle id\n").lower()
+        back = input("Do you want to go back to Main menu? \n'y' go back to Main menu \nelse reinput a vehicle id\n").lower()#ask person to check the typo
         if back == "y":
             return 0
         else:
@@ -743,25 +721,25 @@ def Violation_Record(curs,connection):
                     print ("violator_no invalid input")
                     vehicle_id = input("Violator No :")            
     
-    office_no = input("Office No:")
+    office_no = input("Office No:")#get the office numebr
     while len(office_no) > 15:
         print ("Office No invalid input")
         office_no = input("Office No :")    
     
-    print ("Here is All Ticket Type")
+    print ("Here is All Ticket Type")#list all ticket type
     print (listvtype)    
-    vtype = input("Variable of Ticket Type:")
+    vtype = input("Variable of Ticket Type:")#get the violation type
 
 
     while vtype not in listvtype:
-        print ("Not This Kind Of Ticket Type")
+        print ("Not This Kind Of Ticket Type")#match input violation type with existing type
         vtype = input("Variable of Ticket Type:")           
         while len(vtype) > 10:
             print ("Variable of Ticket Type invalid input")
             vtype = input("Variable of Ticket Type:")   
     
     
-    print ("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")          
+    print ("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")#get the date of the violation          
     vdate = input("Date:")
     while len(vdate) != 11:
         print ("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")          
@@ -769,17 +747,17 @@ def Violation_Record(curs,connection):
         print ("Date invalid input")
         vdate = input("Date :")     
         
-    place = input("Place:")
+    place = input("Place:")#get the place of the violation
     while len(place) >= 20:
         print ("Place invalid input")
         place = input("Place :")    
         
-    descriptions = input("descriptions:")
+    descriptions = input("descriptions:")#get more detailed description of the violation
     while len(descriptions) > 1024:
         print ("descriptions invalid input")
         descriptions = input("descriptions :")          
     
-    while True:
+    while True:#if all informations of violation are valid, update them to memory
         try:
             curStr = ("INSERT INTO ticket VALUES(%s,'%s','%s','%s','%s','%s','%s','%s')"
                               %(ticket_no,violator_no,vehicle_id,office_no,vtype,vdate,place,descriptions))
@@ -797,6 +775,8 @@ def Violation_Record(curs,connection):
     print (" ====== End Violation Record ====== ")
     return 0
 
+
+
 '''
 This function will manage all three search method. It will ask the user to choose
 a number from 1 to 3, and the function will call the co-responding search method
@@ -805,13 +785,13 @@ to perform the search.
 def Search_Engine(curs,connection):
     print ("====== Search Engine ====== ")
     
-    while True:
+    while True:#list options in this search engine
         print ("1 List All Basic Information OF the driver")
         print ("2 List All violation infromation OF the driver")
         print ("3 The Vehicle History")   
         print ("Exit Exit the search Engine")
         
-        sechoice = input("\n").lower()
+        sechoice = input("\n").lower()#handle invalid user input
         while sechoice != "1" and sechoice != "2" and sechoice != "3" and sechoice != "exit":
             print ("Invalid input, please input")
             print ("1 List All Basic Information OF the driver")
@@ -820,7 +800,7 @@ def Search_Engine(curs,connection):
             print ("Exit Exit the search Engine")
             sechoice = input("\n")
             
-        if sechoice == "1":
+        if sechoice == "1":#go to the corresponding part based on user's input.
             search_1(curs,connection)
         elif sechoice == "2":
             search_2(curs,connection)
@@ -830,6 +810,8 @@ def Search_Engine(curs,connection):
             break
     
     return 0 
+
+
 
 '''
 This is the main function of the program. This function will let user connect to
