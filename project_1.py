@@ -165,7 +165,7 @@ def search_2(curs,connection):
         listlicence.append(i[0].strip())          
     print (listlicence)#print a list of licence number to the screen
     print (listsin)#print a list of sin number to the screen
-    option = input("1 Enter Sin Number of the Driver \n2 Enter DriverLicence No\n")
+    option = input("1 Enter SIN Number of the Driver \n2 Enter DriverLicence No.\n")
     while option !="1" and option !="2":
         print ("Invalild input please input '1' or '2' ")
         option = input("1 Enter Sin Number of the Driver \n2 Enter DriverLicence No")
@@ -465,11 +465,11 @@ def Auto_Transaction(curs,connection):
     while True:
         try:
             vehicle_id = input("Vehicle id :")#get ID of vehicle which would be transacted
-            if vehicle_id not in listsin:
+            if vehicle_id not in listvehicle:
                 print ("Please register the Vehicle first")#handle the case which the vehicle hasn't been registrated yet.
-                goto = input("Do you want to go to New Vehicle system['y' or 'n'] \n 'n' Go To Main menu").lower()#ask to registrate the vehicle first.
+                goto = input("Do you want to go to New Vehicle system['y' or 'n'] \n 'n' Go To Main menu: ").lower()#ask to registrate the vehicle first.
                 while goto !="y" and goto != "n":
-                    goto = input("Do you want to go to New Vehicle system['y' or 'n'] \n 'n' Go To Main menu").lower()
+                    goto = input("Do you want to go to New Vehicle system['y' or 'n'] \n 'n' Go To Main menu: ").lower()
                     
                 if goto == "y":#jump to Vehicle Registration.
                     New_Vehicle(curs,connection)
@@ -496,9 +496,9 @@ def Auto_Transaction(curs,connection):
         except:
             print ("Invalid Price Input")
     
-    getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatic get an id ").lower()#ask for transaction id
+    getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatic get an id \n ").lower()#ask for transaction id
     while getTraniD != "y" and getTraniD != "n":
-        getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatic get an id ").lower()
+        getTraniD = input("Do you want to enter transaction_id?\n 'y' is enter an ID, 'n' is automatic get an id \n ").lower()
     if getTraniD == "y":
         while True:
             try:
@@ -525,7 +525,7 @@ def Auto_Transaction(curs,connection):
 
     checkSelect = "DELETE FROM owner WHERE vehicle_id = '" + vehicle_id + "'"
     curs.execute(checkSelect)
-    print ("The Original OnwnerShip deleted")
+    print ("The Original OwnerShip deleted")
     
     is_primary_owner = 'y'
     curStr = ("INSERT INTO OWNER VALUES('%s','%s','%s')"%(buyer_id,vehicle_id,is_primary_owner))  
@@ -533,9 +533,9 @@ def Auto_Transaction(curs,connection):
     print ("The new OnwnerShip added")
     
     while True:
-            non_primary = input("Does this vehicle has more than one owner? Enter 'y' or 'n'\n")#check if there exists another owner.
+            non_primary = input("Does this vehicle has other non-primary owners? Enter 'y' or 'n'\n")#check if there exists another owner.
             if non_primary.lower() == 'y':
-                nonprimarysin = input("Non-primary Owner Sin : ")#update another person to the owner.
+                nonprimarysin = input("Non-primary Owner SIN : ")#update another person to the owner.
                 if nonprimarysin not in listsin:
                     People_Information(curs,connection,nonprimarysin)
                     
@@ -577,7 +577,7 @@ def Driver_Licence_Registration(curs,connection):
             listsin.append(i[0].strip())      
     sin = input ("SIN:")
     while sin in listsin:
-        print ("Enter a New Sin")
+        print ("SIN Already Exist! Please Enter a New SIN")
         sin = input ("SIN:")
         
    
@@ -691,7 +691,7 @@ def Violation_Record(curs,connection):
     print (listticket_no)
      
      
-    chooseTicketNo = input("Do you want to automaticlly produce a random ticket No?\n'y' producet a random ticket No\n'n' enter ticket no manually\n").lower()
+    chooseTicketNo = input("Do you want to automaticlly produce a random ticket No?\n'y' producet a random ticket No.\n'n' enter ticket No manually.\n").lower()
     if chooseTicketNo == 'y':
         while True:
                     ticket_no = randint(0,1000000)#system creates a ticket number automatically
@@ -701,41 +701,41 @@ def Violation_Record(curs,connection):
         while True:
             ticket_no = int(input("Ticket No:"))
             if ticket_no in listticket_no: #no duplicate ticket number allowed.
-                print ("The Ticket No. already Exist")
+                print ("The Ticket No. Already Exist")
             else :
                 break
     
     
-    violator_no = input("Violator No :")#get information of violators
+    violator_no = input("Violator No:")#get information of violators
     while len(violator_no) > 15:
         print ("violator_no invalid input")
-        violator_no = input("Violator No :")
+        violator_no = input("Violator No:")
         
     while violator_no not in listsin:#check if it exists the information of the violator.
-        print ("People Sin did not found, please register first")
+        print ("People SIN did not found, please register first")
         People_Information(curs,connection,violator_no)
 
 
-    vehicle_id = input("vehicle id No :")#get the vehicle ID.
+    vehicle_id = input("Vehicle ID No:")#get the vehicle ID.
     while len(vehicle_id) > 15:
-        print ("violator_no invalid input")
-        vehicle_id = input("vehicle id No :")
+        print ("Violator_no Invalid Input")
+        vehicle_id = input("Vehicle ID No:")
         
     while vehicle_id not in listvehicle:#check if it exists the information of the vehicle.
-        print ("Vehicle Id did not found, please register first")
-        back = input("Do you want to go back to Main menu? \n'y' go back to Main menu \nelse reinput a vehicle id\n").lower()#ask person to check the typo
+        print ("Vehicle ID did not found! Please register first.\n")
+        back = input("Do you want to go back to Main menu? \n'y' go back to Main menu \nelse reinput a vehicle id\n ").lower()#ask person to check the typo
         if back == "y":
             return 0
         else:
             vehicle_id = input("Violator No :")
             while len(vehicle_id) > 15:
-                    print ("violator_no invalid input")
-                    vehicle_id = input("Violator No :")            
+                    print ("Violator_no Invalid Input")
+                    vehicle_id = input("Violator No:")            
     
     office_no = input("Office No:")#get the office numebr
     while len(office_no) > 15:
-        print ("Office No invalid input")
-        office_no = input("Office No :")    
+        print ("Office No. Invalid Input")
+        office_no = input("Office No:")    
     
     print ("Here is All Ticket Type")#list all ticket type
     print (listvtype)    
@@ -863,29 +863,34 @@ def main():
 
     while (status == False):
         print ("====== PLEASE CHOOSE THE PROGRAM ======")
+        #display options menu
         print ("1 New Vehicle Registration \n2 Auto Transaction \n3 Driver Licence Registration\n4 Violation Record\n5 Search Engine\nExit Exit the program\n")    
         Systemnumber = input("Please input 1-5 or Exit\n");
         
+        #go to New Vehicle Registration
         if (Systemnumber == "1"):
-            #go to New Vehicle Registration
             New_Vehicle(curs,connection)
             connection.commit()
             
         elif (Systemnumber == "2"):
-            Auto_Transaction(curs,connection)
-            
+            Auto_Transaction(curs,connection)    
             
         elif (Systemnumber == "3"):
             Driver_Licence_Registration(curs,connection)
+            
         elif (Systemnumber == "4"):
             Violation_Record(curs,connection)
+        
         elif (Systemnumber == "5"):
             Search_Engine(curs,connection)
+        
         elif (Systemnumber.lower() == "exit"):
             print ("Exit the system")
             status = True
+        
         else : 
             print ("invalid input please try again")
+    
     curs.close()        
     connection.close()
 
