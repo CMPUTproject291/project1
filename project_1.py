@@ -109,6 +109,20 @@ def search_1(curs,connection):
         while name not in listname:
             print ("Name does not exist, please input again")
             name = input("Name:") #if name does not exist(a new client), update the new client's information to memory.
+        nameconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,d.expiring_date FROM people p,drive_licence d WHERE p.sin = d.sin AND UPPER(p.name) ='"+name.upper()+"'")
+        curs.execute(nameconstr)
+        result = curs.fetchall() 
+        for j in result: #based on the form of to data structure, to print all information of the new client.    
+            print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nExpiring data",j[5],"\n")       
+        nameconstr = ("SELECT dc.description FROM people p,drive_licence d,driving_condition dc, restriction r WHERE dc.c_id = r.r_id AND r.licence_no = d.licence_no AND p.sin = d.sin AND UPPER(p.name) ='"+name.upper()+"'")
+        curs.execute(nameconstr)
+        result = curs.fetchall() 
+        #print (result)
+        if len(result) == 0:
+                    print ("No Driveing condition and other record\n information is not completed")               
+        for j in result: #based on the form of to data structure, to print all information of the new client.    
+            print ("\nDriving_condition",j[0],"\n")        
+        '''
         nameconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p,drive_licence d,driving_condition dc, restriction r WHERE dc.c_id = r.r_id AND r.licence_no = d.licence_no AND p.sin = d.sin AND UPPER(p.name) ='"+name.upper()+"'")
         curs.execute(nameconstr)
         result = curs.fetchall() 
@@ -117,12 +131,31 @@ def search_1(curs,connection):
                     print ("No Driveing condition and other record\n information is not completed")               
         for j in result: #based on the form of to data structure, to print all information of the new client.    
             print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")
-            
+        '''    
     else:
         licence_no = input("licence NO:") #get licence number
         while licence_no not in listlicence: #match licence number with data in memory
             print ("licence_no does not exist, please input again")
             licence_no = input("licence NO:") #if licence number does not exist(a new client), add the new client's information to memory.
+        licenceconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,d.expiring_date FROM people p, drive_licence d WHERE UPPER(p.sin) = UPPER(d.sin) AND d.licence_no = '"+licence_no+"' ")
+        curs.execute(licenceconstr)
+        result = curs.fetchall()
+        #print (result)
+        if len(result) == 0:
+            print ("No Driveing condition and other record\n information is not completed")
+        #group all the personal information desired together and print on the screen 
+        for j in result:     
+            print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nExpiring data",j[5],"\n")           
+        licenceconstr = ("SELECT dc.description FROM people p, drive_licence d, driving_condition dc, restriction r WHERE UPPER(p.sin) = UPPER(d.sin) AND dc.c_id = r.r_id AND d.licence_no = '"+licence_no+"' AND r.licence_no = d.licence_no")
+        curs.execute(licenceconstr)
+        result = curs.fetchall()
+        #print (result)
+        if len(result) == 0:
+            print ("No Driveing condition and other record\n information is not completed")
+        #group all the personal information desired together and print on the screen 
+        for j in result:     
+            print ("\nDriving_condition",j[0],"\n")             
+        '''
         licenceconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p, drive_licence d, driving_condition dc, restriction r WHERE UPPER(p.sin) = UPPER(d.sin) AND dc.c_id = r.r_id AND d.licence_no = '"+licence_no+"' AND r.licence_no = d.licence_no")
         curs.execute(licenceconstr)
         result = curs.fetchall()
@@ -132,7 +165,7 @@ def search_1(curs,connection):
         #group all the personal information desired together and print on the screen 
         for j in result:     
             print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")        
-    
+        '''
     print( "===== End Of List All Information OF the driver =====")
         
     return 0
