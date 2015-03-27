@@ -202,7 +202,7 @@ def search_2(curs,connection):
 def search_3(curs,connection):
     print ("===== The Vehicle History =====")
 
-    s_serial = ("SELECT licence_no FROM drive_licence")
+    s_serial = ("SELECT SERIAL_NO FROM VEHICLE") #load serial number from memory.
     curs.execute(s_serial)
     lserial = curs.fetchall()
     listserial = []
@@ -210,31 +210,32 @@ def search_3(curs,connection):
         listserial.append(i[0].strip())          
     
     serial_no = input("Serial No:")
-
+    print (listserial)
     while serial_no not in listserial: #if serial number does not exist, get the new numeber from user input.
         print ("Invalid input")
         serial_no = input("Serial No:") 
 
-        while True:
-            try:
-                vhstrcur = "DROP VIEW vehicle_history" #drop view table
-                curs.execute(vhstrcur)
-                connection.commit()
-                
-                break
-            except:
-                print ("droperror")#handle drop error
-                break
-        while True:
-            try:
-                vhstrcur = "CREATE VIEW vehicle_history (vehicle_no, number_sales, average_price, total_tickets) AS SELECT  h.serial_no, count(DISTINCT transaction_id), avg(price), count(DISTINCT t.ticket_no) FROM vehicle h, auto_sale a, ticket t WHERE t.vehicle_id (+) = h.serial_no AND a.vehicle_id (+) = h.serial_no GROUP BY h.serial_no;"
-                curs.execute(vhstrcur)
-                connection.commit()                
-                break
-            except:
-                print ("vh error")
+    while True:
+        try:
+            vhstrcur = "DROP VIEW vehicle_history" #drop view table
+            curs.execute(vhstrcur)
+            connection.commit()
             
-    vhconstr = ("SELECT * FROM vehicle_history vh WHERE vh.vehicle_no = "+serial_no+" ")
+            break
+        except:
+            print ("droperror")#handle drop error
+            break
+    while True:
+        try:
+            vhstrcur = "CREATE VIEW vehicle_history (vehicle_no, number_sales, average_price, total_tickets) AS SELECT  h.serial_no, count(DISTINCT transaction_id), avg(price), count(DISTINCT t.ticket_no) FROM vehicle h, auto_sale a, ticket t WHERE t.vehicle_id (+) = h.serial_no AND a.vehicle_id (+) = h.serial_no GROUP BY h.serial_no"
+            print (vhstrcur)
+            curs.execute(vhstrcur)
+            connection.commit()                
+            break
+        except:
+            print ("vh error")
+            
+    vhconstr = ("SELECT * FROM vehicle_history vh WHERE vh.vehicle_no = '"+serial_no+"' ")
     curs.execute(vhconstr)
     connection.commit()                   
     result = curs.fetchall()   
