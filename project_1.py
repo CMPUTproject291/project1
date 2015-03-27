@@ -127,6 +127,8 @@ def search_1(curs,connection):
         curs.execute(licenceconstr)
         result = curs.fetchall()
         print (result)
+        if len(result) == 0:
+            print ("No Driveing condition and other record\n information is not completed")
         #group all the personal information desired together and print on the screen 
         for j in result:     
             print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")        
