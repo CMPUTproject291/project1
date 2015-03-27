@@ -1,11 +1,4 @@
-#line 44. genderinput has been deleted
-#all print tests have been deleted
-#lines with long # need to be checked again
-#code from line 615 to 638 need to be modified.
-#didn't comment the main function.
-#don't know how to comment form line 356 to 363
-
-# Team Members: Tian Qi Xiao, Weijie Zhang, Qingdai Du
+# Team Members: Tian Qi Xiao, Weijie Sun, Qingdai Du
 # Lecture Section: CMPUT291 B1
 
 import sys
@@ -105,7 +98,7 @@ def search_1(curs,connection):
         listlicence.append(i[0].strip())          
     print (listlicence) #print a list of licence number on the screen
     print (listname) #print a list of dirver's name on the screen
-    option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n") #based on clients' option, load key information of either name or licence number. 
+    option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n Choose An Option Number: /n") #based on clients' option, load key information of either name or licence number. 
     
     #check if the user input valid option number, if not, print a error message and ask for the input again
     while option !="1" and option !="2": #check if the user input valid option number
@@ -370,6 +363,7 @@ def New_Vehicle(curs,connection):
         try:
             owner_id = sin
             vehicle_id = serial_no
+            #ask user to see if the person is primary owner?
             is_primary_ownerinput = input("Is Primary Owner ?[y or n]: ")
             is_primary_owner=is_primary_ownerinput.lower()
             while is_primary_owner != 'y' and is_primary_owner != 'n':    
@@ -696,6 +690,7 @@ def Violation_Record(curs,connection):
         while True:
                     ticket_no = randint(0,1000000)#system creates a ticket number automatically
                     if ticket_no not in listticket_no:
+                        print(ticket_no)
                         break
     else:
         while True:
@@ -751,7 +746,7 @@ def Violation_Record(curs,connection):
     
     
     print ("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")#get the date of the violation          
-    vdate = input("Date:")
+    vdate = input("Violation Date:")
     while len(vdate) != 11:
         print ("Note that we need the date in format looks like '01-Mar-2015'\nDOB [DD-MMM-YYYY] ")          
         
@@ -867,27 +862,35 @@ def main():
         print ("1 New Vehicle Registration \n2 Auto Transaction \n3 Driver Licence Registration\n4 Violation Record\n5 Search Engine\nExit Exit the program\n")    
         Systemnumber = input("Please input 1-5 or Exit\n");
         
-        #go to New Vehicle Registration
+        #if user enter "1" as input, go to New_Vehicle function
         if (Systemnumber == "1"):
             New_Vehicle(curs,connection)
             connection.commit()
-            
+        
+        #if user enter "2" as input, go to Auto_Transaction function   
         elif (Systemnumber == "2"):
             Auto_Transaction(curs,connection)    
-            
+        
+        #if user enter "3" as input, go to Driver_Licence_Registration function    
         elif (Systemnumber == "3"):
             Driver_Licence_Registration(curs,connection)
-            
+        
+        #if user enter "4" as input, go to Violation_Record function
         elif (Systemnumber == "4"):
             Violation_Record(curs,connection)
         
+        #if user enter "5" as input, go to Search_Engine function
         elif (Systemnumber == "5"):
             Search_Engine(curs,connection)
         
+        #if user enter "exit" as input, the program will be terminated
         elif (Systemnumber.lower() == "exit"):
             print ("Exit the system")
             status = True
         
+        #if user enter anything other than given options as input, the program will 
+        #print an error message and go back to the top of the while loop to let
+        #the user input again
         else : 
             print ("invalid input please try again")
     
