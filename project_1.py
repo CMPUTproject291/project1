@@ -96,8 +96,7 @@ def search_1(curs,connection):
     listlicence = []
     for i in llicence:
         listlicence.append(i[0].strip())          
-    print (listlicence) #print a list of licence number on the screen
-    print (listname) #print a list of dirver's name on the screen
+
     option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n Choose An Option Number:") #based on clients' option, load key information of either name or licence number. 
     
     #check if the user input valid option number, if not, print a error message and ask for the input again
@@ -159,8 +158,7 @@ def search_2(curs,connection):
     listlicence = []
     for i in llicence:
         listlicence.append(i[0].strip())          
-    print (listlicence)#print a list of licence number to the screen
-    print (listsin)#print a list of sin number to the screen
+
     option = input("1 Enter SIN Number of the Driver \n2 Enter DriverLicence No.\n")
     while option !="1" and option !="2":
         print ("Invalild input please input '1' or '2' ")
@@ -306,7 +304,6 @@ def New_Vehicle(curs,connection):
                     curs.execute(s_typeid)
                     ltypeid = curs.fetchall()
                     listtypeid = []
-                    print (ltypeid)#print a list of type id 
                     for i in ltypeid:
                         if i[0] not in listtypeid:
                             listtypeid.append(i[0])#load information in ltypeid to listtypeid
@@ -424,11 +421,6 @@ def Auto_Transaction(curs,connection):
     for i in ltransaction_id:
         if i[0].strip() not in listtransaction_id:
             listtransaction_id.append(i[0].strip())       
-    
-    
-    print (listtransaction_id)#print a list of transaction_id to the screen
-    print (listvehicle)#print a list of vehicle to the screen
-    print (listsin)#print a list of sin number to the screen
     
     while True:
         try:
@@ -686,8 +678,6 @@ def Violation_Record(curs,connection):
     for i in lticket_no:
         if i[0] not in listticket_no:
             listticket_no.append(i[0])        
-    print (listticket_no)
-     
      
     chooseTicketNo = input("Do you want to automaticlly produce a random ticket No?\n'y' producet a random ticket No.\n'n' enter ticket No manually.\n").lower()
     if chooseTicketNo == 'y':
@@ -736,8 +726,6 @@ def Violation_Record(curs,connection):
         print ("Office No. Invalid Input")
         office_no = input("Office No:")    
     
-    print ("Here is All Ticket Type")#list all ticket type
-    print (listvtype)    
     vtype = input("Variable of Ticket Type:")#get the violation type
 
 
