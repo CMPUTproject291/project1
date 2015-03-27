@@ -113,8 +113,9 @@ def search_1(curs,connection):
         nameconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p,drive_licence d,driving_condition dc, restriction r WHERE dc.c_id = r.r_id AND r.licence_no = d.licence_no AND p.sin = d.sin AND UPPER(p.name) ='"+name.upper()+"'")
         curs.execute(nameconstr)
         result = curs.fetchall() 
-        print (result)
-               
+        #print (result)
+        if len(result) == 0:
+                    print ("No Driveing condition and other record\n information is not completed")               
         for j in result: #based on the form of to data structure, to print all information of the new client.    
             print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")
             
@@ -126,7 +127,9 @@ def search_1(curs,connection):
         licenceconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p, drive_licence d, driving_condition dc, restriction r WHERE UPPER(p.sin) = UPPER(d.sin) AND dc.c_id = r.r_id AND d.licence_no = '"+licence_no+"' AND r.licence_no = d.licence_no")
         curs.execute(licenceconstr)
         result = curs.fetchall()
-        print (result)
+        #print (result)
+        if len(result) == 0:
+            print ("No Driveing condition and other record\n information is not completed")
         #group all the personal information desired together and print on the screen 
         for j in result:     
             print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")        
@@ -202,7 +205,7 @@ def search_2(curs,connection):
 def search_3(curs,connection):
     print ("===== The Vehicle History =====")
 
-    s_serial = ("SELECT licence_no FROM drive_licence")
+    s_serial = ("SELECT SERIAL_NO FROM VEHICLE") #load serial number from memory.
     curs.execute(s_serial)
     lserial = curs.fetchall()
     listserial = []
@@ -210,31 +213,32 @@ def search_3(curs,connection):
         listserial.append(i[0].strip())          
     
     serial_no = input("Serial No:")
-
+    print (listserial)
     while serial_no not in listserial: #if serial number does not exist, get the new numeber from user input.
         print ("Invalid input")
         serial_no = input("Serial No:") 
 
-        while True:
-            try:
-                vhstrcur = "DROP VIEW vehicle_history" #drop view table
-                curs.execute(vhstrcur)
-                connection.commit()
-                
-                break
-            except:
-                print ("droperror")#handle drop error
-                break
-        while True:
-            try:
-                vhstrcur = "CREATE VIEW vehicle_history (vehicle_no, number_sales, average_price, total_tickets) AS SELECT  h.serial_no, count(DISTINCT transaction_id), avg(price), count(DISTINCT t.ticket_no) FROM vehicle h, auto_sale a, ticket t WHERE t.vehicle_id (+) = h.serial_no AND a.vehicle_id (+) = h.serial_no GROUP BY h.serial_no;"
-                curs.execute(vhstrcur)
-                connection.commit()                
-                break
-            except:
-                print ("vh error")
+    while True:
+        try:
+            vhstrcur = "DROP VIEW vehicle_history" #drop view table
+            curs.execute(vhstrcur)
+            connection.commit()
             
-    vhconstr = ("SELECT * FROM vehicle_history vh WHERE vh.vehicle_no = "+serial_no+" ")
+            break
+        except:
+            print ("droperror")#handle drop error
+            break
+    while True:
+        try:
+            vhstrcur = "CREATE VIEW vehicle_history (vehicle_no, number_sales, average_price, total_tickets) AS SELECT  h.serial_no, count(DISTINCT transaction_id), avg(price), count(DISTINCT t.ticket_no) FROM vehicle h, auto_sale a, ticket t WHERE t.vehicle_id (+) = h.serial_no AND a.vehicle_id (+) = h.serial_no GROUP BY h.serial_no"
+            print (vhstrcur)
+            curs.execute(vhstrcur)
+            connection.commit()                
+            break
+        except:
+            print ("vh error")
+            
+    vhconstr = ("SELECT * FROM vehicle_history vh WHERE vh.vehicle_no = '"+serial_no+"' ")
     curs.execute(vhconstr)
     connection.commit()                   
     result = curs.fetchall()   
