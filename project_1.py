@@ -98,7 +98,7 @@ def search_1(curs,connection):
         listlicence.append(i[0].strip())          
     print (listlicence) #print a list of licence number on the screen
     print (listname) #print a list of dirver's name on the screen
-    option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n Choose An Option Number: /n") #based on clients' option, load key information of either name or licence number. 
+    option = input("1 Enter Name of the Driver \n2 Enter DriverLicence No\n Choose An Option Number:") #based on clients' option, load key information of either name or licence number. 
     
     #check if the user input valid option number, if not, print a error message and ask for the input again
     while option !="1" and option !="2": #check if the user input valid option number
