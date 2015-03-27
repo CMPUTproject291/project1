@@ -113,8 +113,9 @@ def search_1(curs,connection):
         nameconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p,drive_licence d,driving_condition dc, restriction r WHERE dc.c_id = r.r_id AND r.licence_no = d.licence_no AND p.sin = d.sin AND UPPER(p.name) ='"+name.upper()+"'")
         curs.execute(nameconstr)
         result = curs.fetchall() 
-        print (result)
-               
+        #print (result)
+        if len(result) == 0:
+                    print ("No Driveing condition and other record\n information is not completed")               
         for j in result: #based on the form of to data structure, to print all information of the new client.    
             print ("Name:",j[0],"\nlicence No",j[1],"\nAddress",j[2],"\nBirthday",j[3],"\nDriving Class",j[4],"\nDriving_condition",j[5],"\nExpiring data",j[6],"\n")
             
@@ -126,7 +127,7 @@ def search_1(curs,connection):
         licenceconstr = ("SELECT p.name,d.licence_no,p.addr,p.birthday,d.class,dc.description,d.expiring_date FROM people p, drive_licence d, driving_condition dc, restriction r WHERE UPPER(p.sin) = UPPER(d.sin) AND dc.c_id = r.r_id AND d.licence_no = '"+licence_no+"' AND r.licence_no = d.licence_no")
         curs.execute(licenceconstr)
         result = curs.fetchall()
-        print (result)
+        #print (result)
         if len(result) == 0:
             print ("No Driveing condition and other record\n information is not completed")
         #group all the personal information desired together and print on the screen 
